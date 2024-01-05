@@ -1,0 +1,16 @@
+name: bmlc_env
+channels:
+  - defaults
+  - rdkit
+  - conda-forge
+dependencies:
+  - numpy
+  - pandas
+  - python==3.8.11
+  - rdkit
+  - scikit-learn
+  - scipy
+  - pip:
+    - optuna
+    - xgboost
+    - git+https://github.com/bp-kelley/descriptastorus
