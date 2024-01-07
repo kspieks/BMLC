@@ -75,6 +75,7 @@ class BaselineML(object):
         df_summary.to_csv(f'naive_baseline_summary.csv', index=False)
 
         df_tmp = df_summary.query("set == 'test'")
+        # df.std() uses dof=1 by default
         self.logger.info(f"Test MAE (mean +- 1 std): {df_tmp.MAE.mean():.4f} +- "
                             f"{df_tmp.MAE.std():.4f} kcal/mol")
         self.logger.info(f"Test RMSE (mean +- 1 std): {df_tmp.RMSE.mean():.4f} +- "
