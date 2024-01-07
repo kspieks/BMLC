@@ -11,10 +11,10 @@ def read(fname):
 
 
 setup(
-    name="BMLC (Baseline Machine Learning for Cheminformatics)",
+    name="BMLC",
     version=__version__,
     author="Kevin Spiekermann",
-    description="This codebase trains several baseline ML models from sklearn using various fingerprint representations from RDKit.",
+    description="This codebase (Baseline Machine Learning for Cheminformatics) trains several baseline ML models from sklearn using various fingerprint representations from RDKit.",
     url="https://github.com/kspieks/BMLC",
     packages=find_packages(),
     long_description=read('README.md'),
