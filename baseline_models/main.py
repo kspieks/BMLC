@@ -83,6 +83,8 @@ class BaselineML(object):
                             f"{df_tmp.R2.std():.4f}")
         self.logger.info(f"Test Kendall Tau (mean +- 1 std): {df_tmp.kendall_tau_statistic.mean():.4f} +- "
                             f"{df_tmp.kendall_tau_statistic.std():.4f}")
+        self.logger.info(f"Test Spearman Rank (mean +- 1 std): {df_tmp.spearman_statistic.mean():.4f} +- "
+                            f"{df_tmp.spearman_statistic.std():.4f}")
 
 
 
@@ -166,3 +168,5 @@ class BaselineML(object):
                                  f"{df_tmp.R2.std():.4f}")
                 self.logger.info(f"Test Kendall Tau (mean +- 1 std): {df_tmp.kendall_tau_statistic.mean():.4f} +- "
                                  f"{df_tmp.kendall_tau_statistic.std():.4f}")
+                self.logger.info(f"Test Spearman Rank (mean +- 1 std): {df_tmp.spearman_statistic.mean():.4f} +- "
+                            f"{df_tmp.spearman_statistic.std():.4f}")

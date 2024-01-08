@@ -1,8 +1,8 @@
 import numpy as np
 import pandas as pd
+from scipy import stats
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler
-from scipy import stats
 
 from .models import _MODELS
 
@@ -13,8 +13,9 @@ def calc_regression_metrics(y_true, y_pred):
     RMSE = mean_squared_error(y_true, y_pred, squared=False)
     R2 = r2_score(y_true, y_pred)
     kendalltau = stats.kendalltau(y_true, y_pred)
+    spearman = stats.spearmanr(y_true, y_pred)
 
-    return (MAE, RMSE, R2, kendalltau)
+    return (MAE, RMSE, R2, kendalltau, spearman)
 
 
 def naive_baseline(y, splits, logger):
@@ -37,18 +38,28 @@ def naive_baseline(y, splits, logger):
         y_pred_val = [y_train.mean()] * len(y_val)
         y_pred_test = [y_train.mean()] * len(y_test)
 
-        (MAE, RMSE, R2, kendalltau) = calc_regression_metrics(y_train, y_pred_train)
-        dfs_summary_tmp.append(['train', i, MAE, RMSE, R2, kendalltau.statistic, kendalltau.pvalue])
+        (MAE, RMSE, R2, kendalltau, spearman) = calc_regression_metrics(y_train, y_pred_train)
+        dfs_summary_tmp.append(['train', i, MAE, RMSE, R2,
+                                kendalltau.statistic, kendalltau.pvalue,
+                                spearman.statistic, spearman.pvalue,
+                                ])
 
-        (MAE, RMSE, R2, kendalltau) = calc_regression_metrics(y_val, y_pred_val)
-        dfs_summary_tmp.append(['val', i, MAE, RMSE, R2, kendalltau.statistic, kendalltau.pvalue])
+        (MAE, RMSE, R2, kendalltau, spearman) = calc_regression_metrics(y_val, y_pred_val)
+        dfs_summary_tmp.append(['val', i, MAE, RMSE, R2,
+                                kendalltau.statistic, kendalltau.pvalue,
+                                spearman.statistic, spearman.pvalue,
+                                ])
 
-        (MAE, RMSE, R2, kendalltau) = calc_regression_metrics(y_test, y_pred_test)
-        dfs_summary_tmp.append(['test', i, MAE, RMSE, R2, kendalltau.statistic, kendalltau.pvalue])
+        (MAE, RMSE, R2, kendalltau, spearman) = calc_regression_metrics(y_test, y_pred_test)
+        dfs_summary_tmp.append(['test', i, MAE, RMSE, R2,
+                                kendalltau.statistic, kendalltau.pvalue,
+                                spearman.statistic, spearman.pvalue,
+                                ])
 
     cols = ['set', 'split', 
             'MAE', 'RMSE', 'R2', 
             'kendall_tau_statistic', 'kendal_tau_pvalue',
+            'spearman_statistic', 'spearman_pvalue',
             ]
     df_summary = pd.DataFrame(dfs_summary_tmp, columns=cols)
 
@@ -100,20 +111,30 @@ def train_model(model,
 
         # store performance metrics
         # training set
-        (MAE, RMSE, R2, kendalltau) = calc_regression_metrics(y_train, y_pred_train)
-        dfs_summary_tmp.append(['train', i, MAE, RMSE, R2, kendalltau.statistic, kendalltau.pvalue])
+        (MAE, RMSE, R2, kendalltau, spearman) = calc_regression_metrics(y_train, y_pred_train)
+        dfs_summary_tmp.append(['train', i, MAE, RMSE, R2,
+                                kendalltau.statistic, kendalltau.pvalue,
+                                spearman.statistic, spearman.pvalue,
+                                ])
 
         # validation set
-        (MAE, RMSE, R2, kendalltau) = calc_regression_metrics(y_val, y_pred_val)
-        dfs_summary_tmp.append(['val', i, MAE, RMSE, R2, kendalltau.statistic, kendalltau.pvalue])
+        (MAE, RMSE, R2, kendalltau, spearman) = calc_regression_metrics(y_val, y_pred_val)
+        dfs_summary_tmp.append(['val', i, MAE, RMSE, R2,
+                                kendalltau.statistic, kendalltau.pvalue,
+                                spearman.statistic, spearman.pvalue,
+                                ])
 
         # testing set
-        (MAE, RMSE, R2, kendalltau) = calc_regression_metrics(y_test, y_pred_test)
-        dfs_summary_tmp.append(['test', i, MAE, RMSE, R2, kendalltau.statistic, kendalltau.pvalue])
+        (MAE, RMSE, R2, kendalltau, spearman) = calc_regression_metrics(y_test, y_pred_test)
+        dfs_summary_tmp.append(['test', i, MAE, RMSE, R2,
+                                kendalltau.statistic, kendalltau.pvalue,
+                                spearman.statistic, spearman.pvalue,
+                                ])
 
     cols = ['set', 'split', 
             'MAE', 'RMSE', 'R2', 
             'kendall_tau_statistic', 'kendal_tau_pvalue',
+            'spearman_statistic', 'spearman_pvalue',
             ]
     df_summary = pd.DataFrame(dfs_summary_tmp, columns=cols)
 
