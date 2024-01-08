@@ -81,11 +81,6 @@ class BaselineML(object):
                             f"{df_tmp.RMSE.std():.4f} kcal/mol")
         self.logger.info(f"Test R2 (mean +- 1 std): {df_tmp.R2.mean():.4f} +- "
                             f"{df_tmp.R2.std():.4f}")
-        self.logger.info(f"Test Kendall Tau (mean +- 1 std): {df_tmp.kendall_tau_statistic.mean():.4f} +- "
-                            f"{df_tmp.kendall_tau_statistic.std():.4f}")
-        self.logger.info(f"Test Spearman Rank (mean +- 1 std): {df_tmp.spearman_statistic.mean():.4f} +- "
-                            f"{df_tmp.spearman_statistic.std():.4f}")
-
 
 
         # calculate input features X (i.e., fingerprint vectors)

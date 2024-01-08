@@ -7,6 +7,18 @@ from sklearn.preprocessing import StandardScaler
 from .models import _MODELS
 
 
+def calc_regression_metrics_naive(y_true, y_pred):
+    """
+    Calculate performance metrics for the naive baseline regression model.
+    It doesn't make sense to report kentall tau or spearman rank metrics here
+    since the naive baseline predicts a constant y_pred vector. 
+    """
+    MAE = mean_absolute_error(y_true, y_pred)
+    RMSE = mean_squared_error(y_true, y_pred, squared=False)
+    R2 = r2_score(y_true, y_pred)
+
+    return (MAE, RMSE, R2)
+
 def calc_regression_metrics(y_true, y_pred):
     """Calculate performance metrics for the regression model"""
     MAE = mean_absolute_error(y_true, y_pred)
@@ -38,28 +50,17 @@ def naive_baseline(y, splits, logger):
         y_pred_val = [y_train.mean()] * len(y_val)
         y_pred_test = [y_train.mean()] * len(y_test)
 
-        (MAE, RMSE, R2, kendalltau, spearman) = calc_regression_metrics(y_train, y_pred_train)
-        dfs_summary_tmp.append(['train', i, MAE, RMSE, R2,
-                                kendalltau.statistic, kendalltau.pvalue,
-                                spearman.statistic, spearman.pvalue,
-                                ])
+        (MAE, RMSE, R2) = calc_regression_metrics_naive(y_train, y_pred_train)
+        dfs_summary_tmp.append(['train', i, MAE, RMSE, R2])
 
-        (MAE, RMSE, R2, kendalltau, spearman) = calc_regression_metrics(y_val, y_pred_val)
-        dfs_summary_tmp.append(['val', i, MAE, RMSE, R2,
-                                kendalltau.statistic, kendalltau.pvalue,
-                                spearman.statistic, spearman.pvalue,
-                                ])
+        (MAE, RMSE, R2) = calc_regression_metrics_naive(y_val, y_pred_val)
+        dfs_summary_tmp.append(['val', i, MAE, RMSE, R2])
 
-        (MAE, RMSE, R2, kendalltau, spearman) = calc_regression_metrics(y_test, y_pred_test)
-        dfs_summary_tmp.append(['test', i, MAE, RMSE, R2,
-                                kendalltau.statistic, kendalltau.pvalue,
-                                spearman.statistic, spearman.pvalue,
-                                ])
+        (MAE, RMSE, R2) = calc_regression_metrics_naive(y_test, y_pred_test)
+        dfs_summary_tmp.append(['test', i, MAE, RMSE, R2])
 
     cols = ['set', 'split', 
             'MAE', 'RMSE', 'R2', 
-            'kendall_tau_statistic', 'kendal_tau_pvalue',
-            'spearman_statistic', 'spearman_pvalue',
             ]
     df_summary = pd.DataFrame(dfs_summary_tmp, columns=cols)
 
