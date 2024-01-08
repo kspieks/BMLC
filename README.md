@@ -14,7 +14,7 @@ conda activate bmlc
 pip install rdkit
 
 # install other packages
-pip install optuna xgboost
+pip install scikit-learn optuna xgboost
 
 pip install git+https://github.com/bp-kelley/descriptastorus
 
