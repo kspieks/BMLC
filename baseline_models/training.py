@@ -41,9 +41,9 @@ def naive_baseline(y, splits, logger):
         y_val = y[val_indices]
         y_test = y[test_indices]
 
-        logger.info(f'Mean training value: {y_train.mean():.3f} kcal/mol')
-        logger.info(f'Mean validation value: {y_val.mean():.3f} kcal/mol')
-        logger.info(f'Mean testing value: {y_test.mean():.3f} kcal/mol\n')
+        logger.info(f'Mean training value: {y_train.mean():.3f}')
+        logger.info(f'Mean validation value: {y_val.mean():.3f}')
+        logger.info(f'Mean testing value: {y_test.mean():.3f}\n')
 
         # baseline model uses mean of the training set
         y_pred_train = [y_train.mean()] * len(y_train)

@@ -76,9 +76,9 @@ class BaselineML(object):
         df_tmp = df_summary.query("set == 'test'")
         # df.std() uses dof=1 by default
         self.logger.info(f"Test MAE (mean +- 1 std): {df_tmp.MAE.mean():.4f} +- "
-                            f"{df_tmp.MAE.std():.4f} kcal/mol")
+                            f"{df_tmp.MAE.std():.4f}")
         self.logger.info(f"Test RMSE (mean +- 1 std): {df_tmp.RMSE.mean():.4f} +- "
-                            f"{df_tmp.RMSE.std():.4f} kcal/mol")
+                            f"{df_tmp.RMSE.std():.4f}")
         self.logger.info(f"Test R2 (mean +- 1 std): {df_tmp.R2.mean():.4f} +- "
                             f"{df_tmp.R2.std():.4f}")
 
@@ -156,9 +156,9 @@ class BaselineML(object):
                 df_tmp = df_summary.query("set == 'test'")
                 self.logger.info('')
                 self.logger.info(f"Test MAE (mean +- 1 std): {df_tmp.MAE.mean():.4f} +- "
-                                 f"{df_tmp.MAE.std():.4f} kcal/mol")
+                                 f"{df_tmp.MAE.std():.4f}")
                 self.logger.info(f"Test RMSE (mean +- 1 std): {df_tmp.RMSE.mean():.4f} +- "
-                                 f"{df_tmp.RMSE.std():.4f} kcal/mol")
+                                 f"{df_tmp.RMSE.std():.4f}")
                 self.logger.info(f"Test R2 (mean +- 1 std): {df_tmp.R2.mean():.4f} +- "
                                  f"{df_tmp.R2.std():.4f}")
                 self.logger.info(f"Test Kendall Tau (mean +- 1 std): {df_tmp.kendall_tau_statistic.mean():.4f} +- "
