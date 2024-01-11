@@ -14,8 +14,8 @@ def parse_training_command_line_arguments(command_line_args=None):
     """
     parser = ArgumentParser(description='Baseline models for cheminformatics')
 
-    parser.add_argument('--log_dir', type=str,
-                        help='Directory to store the log file.')
+    parser.add_argument('--save_dir', type=str,
+                        help='Directory to store the log file and save predictions.')
     parser.add_argument('--log_name', type=str, default='train',
                         help='Filename for the training log.')
 

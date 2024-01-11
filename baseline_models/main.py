@@ -1,3 +1,4 @@
+import os
 import pickle as pkl
 import time
 
@@ -26,6 +27,7 @@ class BaselineML(object):
         n_jobs,
         n_trials,
         logger,
+        save_dir,
         random_state=42,
     ):
         self.data_path = data_path
@@ -40,6 +42,7 @@ class BaselineML(object):
         self.n_trials = n_trials
 
         self.logger = logger
+        self.save_dir = save_dir
 
         self.random_state = random_state
 
@@ -58,7 +61,7 @@ class BaselineML(object):
         self.logger.info("*" * 88)
         self.logger.info("Naive baseline: mean predictor")
         df_summary = naive_baseline(y, self.splits, self.logger)
-        df_summary.to_csv(f'naive_baseline_summary.csv', index=False)
+        df_summary.to_csv(os.path.join(self.save_dir, f'naive_baseline_summary.csv'), index=False)
 
         df_tmp = df_summary.query("set == 'test'")
         # df.std() uses dof=1 by default
@@ -118,7 +121,8 @@ class BaselineML(object):
                 # NaN value for columns/parameters which do not apply to that algorithm
                 # sort to put best validation performance on top
                 study.trials_dataframe().sort_values(by="value").to_csv(
-                    f"{model_type}_{featurizer}_optuna_results.csv", index=False
+                    os.path.join(self.save_dir, f"{model_type}_{featurizer}_optuna_results.csv"), 
+                    index=False
                 )
                 self.logger.info(study.trials_dataframe().sort_values(by="value"))
 
@@ -135,14 +139,14 @@ class BaselineML(object):
                     y=y,
                     splits=self.splits,
                 )
-                with open(f"{model_type}_{featurizer}_scalers.pkl", "wb") as f:
+                with open(os.path.join(self.save_dir, f"{model_type}_{featurizer}_scalers.pkl"), "wb") as f:
                     pkl.dump(scalers, f)
 
-                with open(f"{model_type}_{featurizer}_best_models.pkl", "wb") as f:
+                with open(os.path.join(self.save_dir, f"{model_type}_{featurizer}_best_models.pkl), "wb") as f:
                     pkl.dump(models, f)
 
-                df_summary.to_csv(f'{model_type}_{featurizer}_summary.csv', index=False)
-                df_predictions.to_csv(f'{model_type}_{featurizer}_predictions.csv', index=False)
+                df_summary.to_csv(os.path.join(self.save_dir, f'{model_type}_{featurizer}_summary.csv'), index=False)
+                df_predictions.to_csv(os.path.join(self.save_dir, f'{model_type}_{featurizer}_predictions.csv'), index=False)
 
                 df_tmp = df_summary.query("set == 'test'")
                 self.logger.info('')

@@ -24,6 +24,7 @@ def main():
 
     baseline_configs = config_dict['baseline_configs']
     baseline_configs['logger'] = logger
+    baseline_configs['save_dir'] = args.save_dir
     baseline_ML = BaselineML(**baseline_configs)
     baseline_ML.execute()
 
