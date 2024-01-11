@@ -82,7 +82,11 @@ class BaselineML(object):
             
             X = np.stack(self.df[featurizer].values)
             # ensure the dimensions match before proceeding
-            assert X.shape[0] == len(y)
+            if X.shape[0] != len(y):
+                msg = "Dimension mismatch!\n"
+                msg += f"There are {X.shape[0]} SMILES and {len(y)} target values.\n"
+                msg += "These values should be identical..."
+                raise ValueError(msg)
 
             for model_type in self.models:
                 self.logger.info("*" * 88)
