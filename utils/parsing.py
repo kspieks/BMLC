@@ -2,7 +2,7 @@ import os
 from argparse import ArgumentParser
 
 
-def parse_command_line_arguments(command_line_args=None):
+def parse_training_command_line_arguments(command_line_args=None):
     """
     Parse command-line arguments.
 

@@ -5,15 +5,16 @@
 Baseline ML models for cheminformatics
 """
 from baseline_models.main import BaselineML
-from utils.parsing import parse_command_line_arguments
+from utils.parsing import parse_training_command_line_arguments
 from utils.utils import create_logger
+
 
 def main():
     """
     The main executable function.
     """
 
-    args, config_dict = parse_command_line_arguments()
+    args, config_dict = parse_training_command_line_arguments()
 
     logger = create_logger(args.log_name, args.log_dir)
     logger.info('Using arguments...')
