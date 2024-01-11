@@ -6,7 +6,7 @@ import optuna
 import pandas as pd
 from optuna.samplers import TPESampler
 
-from .featurizers import _FP_FEATURIZERS
+from .featurizers import _FP_FEATURIZERS, get_rxn_fp
 from .training import Objective, callback, naive_baseline, train_model
 
 
@@ -50,19 +50,6 @@ class BaselineML(object):
         with open(self.split_path, "rb") as f:
             self.splits = pkl.load(f)
 
-    def get_rxn_fp(self, rxn_smi, featurizer):
-        """
-        Creates a fingerprint for a reaction.
-
-        Featurizer is one of the functions from featurizers.py
-        which accepts a SMILES string as input and then return a fingerprint vector.
-        """
-        rsmi, psmi = rxn_smi.split('>>')
-        fp_r = featurizer(rsmi)
-        fp_p = featurizer(psmi)
-        
-        return np.concatenate((fp_r, fp_p - fp_r))
-
     def execute(self):
         # assign regression target y
         y = self.df[self.target].values
@@ -87,7 +74,7 @@ class BaselineML(object):
         for featurizer in self.featurizers:
             # reaction mode
             if self.rxn_mode:
-                self.df[featurizer] = self.df.smiles.apply(self.get_rxn_fp, featurizer=_FP_FEATURIZERS[featurizer])
+                self.df[featurizer] = self.df.smiles.apply(get_rxn_fp, featurizer=_FP_FEATURIZERS[featurizer])
 
             # molecule mode
             else:
