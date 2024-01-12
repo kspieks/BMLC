@@ -63,3 +63,45 @@ def parse_training_command_line_arguments(command_line_args=None):
             config_dict[group.title] = {a.dest:getattr(args, a.dest, None) for a in group._group_actions}
 
     return args, config_dict
+
+
+def parse_prediction_command_line_arguments(command_line_args=None):
+    """
+    Parse command-line arguments.
+
+    Args:
+        command_line_args: The command line arguments.
+
+    Returns:
+        The parsed command-line arguments by key words.
+    """
+    parser = ArgumentParser(description='Baseline models for cheminformatics')
+
+    parser.add_argument('--save_dir', type=str,
+                        help='Directory to store the log file and save predictions.')
+    parser.add_argument('--log_name', type=str, default='predict',
+                        help='Filename for the prediction log.')
+    
+    parser.add_argument('--data_path', type=str,
+                        help='Path to the csv file containing SMILES for prediction.')
+    parser.add_argument('--rxn_mode', action='store_true', default=False,
+                        help='Boolean indicating whether the smiles column contains reaction SMILES \
+                        whose features will be concatenated as r + (p-r).')
+    
+    parser.add_argument('--featurizer', type=str,
+                        choices=['morgan_counts', 'morgan_binary',
+                                 'rdkit_2d', 'rdkit_2d_normalized',
+                                 'AtomPair', 'Avalon', 'MACCS', 'MQN'],
+                        help='Fingerprint featurizer to use.')
+    
+    parser.add_argument('--model_path', type=str,
+                        help='Path to the pickle file containing a list of trained models.')
+    parser.add_argument('--scaler_path', type=str,
+                        help='Path to the pickle file containing a list of standard scalers to reverse the z-scored predictions.')
+    
+    parser.add_argument('--pred_name', type=str,
+                        help='Name for the csv file containing the model predictions e.g., preds.csv')
+
+    args = parser.parse_args(command_line_args)
+
+    return args
