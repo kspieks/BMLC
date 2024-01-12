@@ -1,3 +1,4 @@
+from sklearn import linear_model
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.neural_network import MLPRegressor
@@ -88,5 +89,27 @@ def get_PLS(trial, random_state=42):
         "n_components": trial.suggest_int("n_components", low=1, high=20, step=1)
     }
     regressor_obj = PLSRegression(**params)
+
+    return regressor_obj
+
+
+@register_model_generator('Lasso')
+def get_Lasso(trial, random_state=42):
+    params = {
+        "alpha": trial.suggest_float("alpha", 1e-6, 1e6, log=True),
+        "random_state": random_state,
+    }
+    regressor_obj = linear_model.Lasso(**params)
+
+    return regressor_obj
+
+
+@register_model_generator('Ridge')
+def get_Ridge(trial, random_state=42):
+    params = {
+        "alpha": trial.suggest_float("alpha", 1e-6, 1e6, log=True),
+        "random_state": random_state,
+    }
+    regressor_obj = linear_model.Ridge(**params)
 
     return regressor_obj
