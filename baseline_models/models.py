@@ -65,12 +65,12 @@ def get_XGB(trial, random_state=42):
 
 @register_model_generator('MLP')
 def get_MLP(trial, random_state=42):
-    num_layers = trial.suggest_int('num_layers', low=1, high=10, step=1)
-    layer_size = trial.suggest_int('layer_size', low=100, high=500, step=50)
+    num_layers = trial.suggest_int("num_layers", low=1, high=10, step=1)
+    layer_size = trial.suggest_int("layer_size", low=100, high=500, step=50)
     params = {
         "hidden_layer_sizes" : [layer_size for i in range(num_layers)],
-        'alpha': trial.suggest_loguniform('alpha', 1e-6, 1e-1),   # L2 regularization
-        'learning_rate_init': trial.suggest_loguniform('learning_rate_init', 1e-4, 1e-1),
+        "alpha": trial.suggest_loguniform("alpha", 1e-6, 1e-1),   # L2 regularization
+        "learning_rate_init": trial.suggest_loguniform("learning_rate_init", 1e-4, 1e-1),
         "random_state": random_state, 
     }
     regressor_obj = MLPRegressor(**params)
