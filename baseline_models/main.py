@@ -79,6 +79,9 @@ class BaselineML(object):
         # calculate input features X (i.e., fingerprint vectors) in parallel
         pandarallel.initialize(nb_workers=self.n_cpus_featurize, progress_bar=True)
         for featurizer in self.featurizers:
+            self.logger.info("*" * 88)
+            self.logger.info(f"featurizer: {featurizer}")
+            
             # reaction mode
             if self.rxn_mode:
                 self.df[featurizer] = self.df.smiles.parallel_apply(get_rxn_fp, featurizer=_FP_FEATURIZERS[featurizer])
@@ -96,10 +99,7 @@ class BaselineML(object):
                 raise ValueError(msg)
 
             for model_type in self.models:
-                self.logger.info("*" * 88)
                 self.logger.info(f"model_type: {model_type}")
-                self.logger.info(f"featurizer: {featurizer}")
-
                 self.logger.info(f"X.shape: {X.shape}")
                 self.logger.info(f"y.shape: {y.shape}")
 
