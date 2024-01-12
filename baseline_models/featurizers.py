@@ -31,7 +31,7 @@ def register_features_generator(features_generator_name):
     return decorator
 
 
-def to_np(vect, nbits):
+def rdkit_to_np(vect, nbits):
     """Helper function to convert a sparse vector from RDKit to a dense numpy vector."""
     arr = np.zeros((nbits,))
     DataStructs.ConvertToNumpyArray(vect, arr)  # overwrites arr
@@ -44,12 +44,11 @@ def calc_morgan_counts_fp(smi,
                           radius=2,
                           num_bits=2048,
                           params=params,
-                          to_np=to_np,
                           ):
     mol = Chem.MolFromSmiles(smi, params)
     feature_vec = AllChem.GetHashedMorganFingerprint(mol, radius, nBits=num_bits)
     # convert rdkit.DataStructs.cDataStructs.UIntSparseIntVect to np.array
-    return to_np(feature_vec, num_bits)
+    return rdkit_to_np(feature_vec, num_bits)
 
 
 @register_features_generator('morgan_binary')
@@ -57,12 +56,11 @@ def calc_morgan_binary_fp(smi,
                           radius=2,
                           num_bits=2048,
                           params=params,
-                          to_np=to_np,
                           ):
     mol = Chem.MolFromSmiles(smi, params)
     feature_vec = AllChem.GetMorganFingerprintAsBitVect(mol, radius, nBits=num_bits)
     # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
-    return to_np(feature_vec, num_bits)
+    return rdkit_to_np(feature_vec, num_bits)
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetHashedAtomPairFingerprint
@@ -72,7 +70,6 @@ def calc_atom_pair_fp(smi,
                       maxPathLen=30, 
                       nbits=2048, 
                       params=params,
-                      to_np=to_np,
                       ):
     mol = Chem.MolFromSmiles(smi, params)
     fp = rdMolDescriptors.GetHashedAtomPairFingerprint(mol,
@@ -81,7 +78,7 @@ def calc_atom_pair_fp(smi,
                                    nBits=nbits,
                                   )
     # convert rdkit.DataStructs.cDataStructs.IntSparseIntVect to np.array
-    return to_np(fp, nbits)
+    return rdkit_to_np(fp, nbits)
 
 
 @register_features_generator('Avalon')
