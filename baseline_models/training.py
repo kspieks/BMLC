@@ -134,7 +134,7 @@ def train_model(model,
 
     cols = ['set', 'split', 
             'MAE', 'RMSE', 'R2', 
-            'kendall_tau_statistic', 'kendal_tau_pvalue',
+            'kendall_tau_statistic', 'kendall_tau_pvalue',
             'spearman_statistic', 'spearman_pvalue',
             ]
     df_summary = pd.DataFrame(dfs_summary_tmp, columns=cols)
