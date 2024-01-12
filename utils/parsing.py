@@ -38,8 +38,7 @@ def parse_training_command_line_arguments(command_line_args=None):
                         help='Fingerprint featurizers to use.')
 
     baseline_configs.add_argument('--models', nargs='+',
-                        choices=['LinearSVR', 'RF', 'XGB'],
-                        choices=['LinearSVR', 'MLP', 'RF', 'XGB'],
+                        choices=['LinearSVR', 'MLP', 'PLS', 'RF', 'XGB'],
                         help='Sklearn models to train.')
     
     baseline_configs.add_argument('--random_state', type=int,

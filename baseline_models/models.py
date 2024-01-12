@@ -1,3 +1,4 @@
+from sklearn.cross_decomposition import PLSRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.neural_network import MLPRegressor
 from sklearn.svm import LinearSVR
@@ -73,5 +74,19 @@ def get_MLP(trial, random_state=42):
         "random_state": random_state, 
     }
     regressor_obj = MLPRegressor(**params)
+
+    return regressor_obj
+
+
+@register_model_generator('PLS')
+def get_PLS(trial, random_state=42):
+    """
+    Random state is not used for PLS. 
+    It is passed in to be consistent with the syntax of the other models.
+    """
+    params = {
+        "n_components": trial.suggest_int("n_components", low=1, high=20, step=1)
+    }
+    regressor_obj = PLSRegression(**params)
 
     return regressor_obj
