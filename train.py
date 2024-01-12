@@ -16,7 +16,7 @@ def main():
 
     args, config_dict = parse_training_command_line_arguments()
 
-    logger = create_logger(args.log_name, args.log_dir)
+    logger = create_logger(args.log_name, args.save_dir)
     logger.info('Using arguments...')
     for arg in vars(args):
         logger.info(f'{arg}: {getattr(args, arg)}')

@@ -53,8 +53,8 @@ def parse_training_command_line_arguments(command_line_args=None):
 
     args = parser.parse_args(command_line_args)
 
-    if args.log_dir is None:
-        args.log_dir = os.getcwd()
+    if args.save_dir is None:
+        args.save_dir = os.getcwd()
 
     config_dict = dict({})
     group_list = ['baseline_configs']
