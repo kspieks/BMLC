@@ -91,9 +91,9 @@ def calc_avalon_fp(smi,
                    ):
     mol = Chem.MolFromSmiles(smi, params)
     # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
-    fp = np.array(pyAvalonTools.GetAvalonFP(mol, nBits=nBits))
+    fp = pyAvalonTools.GetAvalonFP(mol, nBits=nBits)
     
-    return fp
+    return np.array(fp)
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetMACCSKeysFingerprint
@@ -103,8 +103,9 @@ def calc_MACCS_fp(smi,
                   ):
     mol = Chem.MolFromSmiles(smi, params)
     # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
-    fp = np.array(MACCSkeys.GenMACCSKeys(mol))
-    return fp
+    fp = MACCSkeys.GenMACCSKeys(mol)
+
+    return np.array(fp
 
 
 @register_features_generator('MQN')
@@ -122,6 +123,7 @@ def calc_MQN_fp(smi,
     mol = Chem.MolFromSmiles(smi, params)
     # features are returned as a list
     fp = rdMolDescriptors.MQNs_(mol)
+
     return np.array(fp)
 
 
@@ -141,7 +143,7 @@ def calc_rdkit_2d_fp(smi):
     generator = rdDescriptors.RDKit2D()
     fp = generator.process(smi)[1:]
 
-    return fp
+    return np.array(fp)
 
 
 @register_features_generator('rdkit_2d_normalized')
@@ -150,7 +152,7 @@ def calc_rdkit_2d_normalized_fp(smi):
     generator = rdNormalizedDescriptors.RDKit2DNormalized()
     fp = generator.process(smi)[1:]
 
-    return fp
+    return np.array(fp)
 
 
 def get_rxn_fp(rxn_smi, featurizer):
