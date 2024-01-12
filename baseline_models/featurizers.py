@@ -105,7 +105,7 @@ def calc_MACCS_fp(smi,
     # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
     fp = MACCSkeys.GenMACCSKeys(mol)
 
-    return np.array(fp
+    return np.array(fp)
 
 
 @register_features_generator('MQN')
