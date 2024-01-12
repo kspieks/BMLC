@@ -55,6 +55,7 @@ def get_XGB(trial, random_state=42):
         "gamma": trial.suggest_int("gamma", 0, 5),  # minimum loss reduction required to make further partition on a leaf node
         "learning_rate": trial.suggest_loguniform("learning_rate", 1e-5, 1e-1),  # lower values require more trees
         "random_state": random_state,
+        "n_jobs": 1,
     }
     regressor_obj = XGBRegressor(**params)
 
