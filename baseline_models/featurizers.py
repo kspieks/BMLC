@@ -108,7 +108,7 @@ def calc_MACCS_fp(smi,
 @register_features_generator('MQN')
 def calc_MQN_fp(smi,
                 params=params,
-):
+                ):
     """
     Molecular Quantun Numbers (MQN) Descriptors.
     Consists of 4 categories, but only 42 features total:
