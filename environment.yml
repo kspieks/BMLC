@@ -12,5 +12,6 @@ dependencies:
   - scipy
   - pip:
     - optuna
+    - pandarallel
     - xgboost
     - git+https://github.com/bp-kelley/descriptastorus

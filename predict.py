@@ -10,6 +10,7 @@ import pickle as pkl
 
 import numpy as np
 import pandas as pd
+from pandarallel import pandarallel
 
 from baseline_models.featurizers import _FP_FEATURIZERS, get_rxn_fp
 from utils.parsing import parse_prediction_command_line_arguments
@@ -33,15 +34,16 @@ def main():
     df = pd.read_csv(args.data_path)
     logger.info(f'{args.data_path} has {len(df):,} rows')
 
-    # generate features
+    # generate features in parallel
+    pandarallel.initialize(nb_workers=args.n_cpus_featurize, progress_bar=True)
     featurizer = args.featurizer
     # reaction mode
     if args.rxn_mode:
-        df[featurizer] = df.smiles.apply(get_rxn_fp, featurizer=_FP_FEATURIZERS[featurizer])
+        df[featurizer] = df.smiles.parallel_apply(get_rxn_fp, featurizer=_FP_FEATURIZERS[featurizer])
 
     # molecule mode
     else:
-        df[featurizer] = df.smiles.apply(_FP_FEATURIZERS[featurizer])
+        df[featurizer] = df.smiles.parallel_apply(_FP_FEATURIZERS[featurizer])
     
     X = np.stack(df[featurizer].values)
     logger.info(f'X.shape: {X.shape}')

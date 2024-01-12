@@ -4,8 +4,9 @@ import time
 
 import numpy as np
 import optuna
-import pandas as pd
 from optuna.samplers import TPESampler
+import pandas as pd
+from pandarallel import pandarallel
 
 from .featurizers import _FP_FEATURIZERS, get_rxn_fp
 from .training import Objective, callback, naive_baseline, train_model
@@ -24,7 +25,8 @@ class BaselineML(object):
         featurizers,
         models,
         rxn_mode,
-        n_jobs,
+        n_cpus_featurize,
+        n_cpus_optuna,
         n_trials,
         logger,
         save_dir,
@@ -38,7 +40,8 @@ class BaselineML(object):
         self.models = models
         self.rxn_mode = rxn_mode
 
-        self.n_jobs = n_jobs
+        self.n_cpus_featurize = n_cpus_featurize
+        self.n_cpus_optuna = n_cpus_optuna
         self.n_trials = n_trials
 
         self.logger = logger
@@ -73,15 +76,16 @@ class BaselineML(object):
                             f"{df_tmp.R2.std():.4f}")
 
 
-        # calculate input features X (i.e., fingerprint vectors)
+        # calculate input features X (i.e., fingerprint vectors) in parallel
+        pandarallel.initialize(nb_workers=self.n_cpus_featurize, progress_bar=True)
         for featurizer in self.featurizers:
             # reaction mode
             if self.rxn_mode:
-                self.df[featurizer] = self.df.smiles.apply(get_rxn_fp, featurizer=_FP_FEATURIZERS[featurizer])
+                self.df[featurizer] = self.df.smiles.parallel_apply(get_rxn_fp, featurizer=_FP_FEATURIZERS[featurizer])
 
             # molecule mode
             else:
-                self.df[featurizer] = self.df.smiles.apply(_FP_FEATURIZERS[featurizer])
+                self.df[featurizer] = self.df.smiles.parallel_apply(_FP_FEATURIZERS[featurizer])
             
             X = np.stack(self.df[featurizer].values)
             # ensure the dimensions match before proceeding
@@ -113,7 +117,7 @@ class BaselineML(object):
                         random_state=self.random_state,
                     ),
                     n_trials=self.n_trials,
-                    n_jobs=self.n_jobs,
+                    n_jobs=self.n_cpus_optuna,
                     callbacks=[callback],
                 )
                 self.logger.info(f"Elapsed time: {time.time() - start:.2f}s")
