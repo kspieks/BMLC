@@ -66,14 +66,11 @@ def draw_best_fit(X, y, ax, estimator='linear', **kwargs):
     ax.plot(xr, model.predict(xr[:, np.newaxis]), label=label, **kwargs)
     return ax
 
-def draw_identity(ax, ax_min, ax_max, **kwargs):
+def draw_identity(ax, **kwargs):
     ax = ax or plt.gca()
-    
-    # points = np.linspace(*ax.get_xlim(), num=100)
-    points = np.linspace(ax_min, ax_max, 100)
+    points = np.linspace(*ax.get_xlim(), num=100)
     ax.plot(points, points, **kwargs)
-    ax.set_xlim([ax_min, ax_max])
-    ax.set_ylim([ax_min, ax_max])
+    
     return ax
 
 def draw_parity_plot(y_true, y_pred):
@@ -87,19 +84,21 @@ def draw_parity_plot(y_true, y_pred):
 
     ax_min = np.floor(min(min(y_true), min(y_pred)))
     ax_max = np.floor(max(max(y_true), max(y_pred)))
+    ax.set_xlim([ax_min, ax_max])
+    ax.set_ylim([ax_min, ax_max])
 
-    ax = draw_identity(ax, ax_min, ax_max,
-                    linestyle='--',
-                    color='k', alpha=0.4,
-                    linewidth=1.75,
-                    label='identity',
-                    )
+    ax = draw_identity(ax,
+                       linestyle='--',
+                       color='k', alpha=0.4,
+                       linewidth=1.75,
+                       label='identity',
+                       )
 
     ax = draw_best_fit(y_true, y_pred, ax,
-                    linestyle='--',
-                    color='k', alpha=0.9,
-                    linewidth=1.75,
-                    )
+                       linestyle='--',
+                       color='k', alpha=0.9,
+                       linewidth=1.75,
+                       )
 
     ax.legend(fontsize=13)
 
