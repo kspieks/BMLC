@@ -14,7 +14,7 @@ conda activate bmlc
 pip install rdkit
 
 # install other packages
-pip install scikit-learn optuna pandarallel xgboost
+pip install scikit-learn optuna pandarallel seaborn xgboost
 
 pip install git+https://github.com/bp-kelley/descriptastorus
 
