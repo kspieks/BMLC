@@ -1,13 +1,14 @@
 """
 Collection of functions to plot results from a regression model.
 """
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import seaborn as sns
 from sklearn import linear_model
 from sklearn.metrics import r2_score
-from sklearn.preprocessing import PolynomialFeatures
 from sklearn.pipeline import make_pipeline
-import seaborn as sns
+from sklearn.preprocessing import PolynomialFeatures
+
 sns.set()
 sns.set_context('talk')
 sns.set_style('darkgrid', {'axes.edgecolor': '0.2',
