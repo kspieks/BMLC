@@ -81,13 +81,11 @@ def draw_parity_plot(y_true, y_pred):
                         color=COLOR, alpha=0.7,
                         size=6,
                         legend=False,
-                        # label=None,
                         ax=ax,
                         )
 
     ax_min = np.floor(min(min(y_true), min(y_pred)))
     ax_max = np.floor(max(max(y_true), max(y_pred)))
-    # print(ax_min, ax_max)
 
     ax = draw_identity(ax, ax_min, ax_max,
                     linestyle='--',
