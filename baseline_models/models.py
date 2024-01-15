@@ -86,7 +86,7 @@ def get_PLS(trial, random_state=42):
     It is passed in to be consistent with the syntax of the other models.
     """
     params = {
-        "n_components": trial.suggest_int("n_components", low=1, high=20, step=1)
+        "n_components": trial.suggest_int("n_components", low=1, high=15, step=1)
     }
     regressor_obj = PLSRegression(**params)
 
