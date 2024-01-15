@@ -13,8 +13,8 @@ import pandas as pd
 from pandarallel import pandarallel
 
 from baseline_models.featurizers import _FP_FEATURIZERS, get_rxn_fp
-from utils.parsing import parse_prediction_command_line_arguments
-from utils.utils import create_logger
+from baseline_models.utils.parsing import parse_prediction_command_line_arguments
+from baseline_models.utils.utils import create_logger
 
 
 def main():

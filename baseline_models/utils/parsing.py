@@ -32,6 +32,7 @@ def parse_training_command_line_arguments(command_line_args=None):
                         whose features will be concatenated as r + (p-r).')
     
     baseline_configs.add_argument('--featurizers', nargs='+',
+                        # default='morgan',
                         choices=['morgan_counts', 'morgan_binary',
                                  'rdkit_2d', 'rdkit_2d_normalized',
                                  'AtomPair', 'Avalon', 'MACCS', 'MQN'],
@@ -53,6 +54,13 @@ def parse_training_command_line_arguments(command_line_args=None):
                         help='Number of CPUs to use in parallel when creating feature vectors.')
     baseline_configs.add_argument('--n_trials', type=int, default=32,
                         help='Number of trials to do with Optuna.')
+
+    # # Options for controlling the amount of information printed to the console
+    # # By default a moderate level of information is printed; you can either
+    # # ask for less (quiet), more (verbose), or much more (debug)
+    # group = parser.add_mutually_exclusive_group()
+    # group.add_argument('-d', '--debug', action='store_true', help='print debug information')
+    # group.add_argument('-q', '--quiet', action='store_true', help='only print warnings and errors')
 
     args = parser.parse_args(command_line_args)
 

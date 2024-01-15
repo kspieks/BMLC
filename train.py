@@ -5,8 +5,8 @@
 Baseline ML models for cheminformatics
 """
 from baseline_models.main import BaselineML
-from utils.parsing import parse_training_command_line_arguments
-from utils.utils import create_logger
+from baseline_models.utils.parsing import parse_training_command_line_arguments
+from baseline_models.utils.utils import create_logger
 
 
 def main():
