@@ -5,7 +5,7 @@ The goal of this repo is to easily train several baseline ML models from sklearn
 
 ```
 # create conda env
-conda create -n bmlc python 3.9 -y
+conda create -n bmlc python=3.11 -y
 
 # activate conda env
 conda activate bmlc 
