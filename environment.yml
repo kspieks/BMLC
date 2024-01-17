@@ -12,6 +12,7 @@ dependencies:
   - scipy
   - seaborn
   - pip:
+    - hiplot
     - optuna
     - pandarallel
     - xgboost
