@@ -8,7 +8,7 @@ The goal of this repo is to easily train several baseline ML models from sklearn
 conda create -n bmlc python=3.11 -y
 
 # activate conda env
-conda activate bmlc 
+conda activate bmlc
 
 # install rdkit
 pip install rdkit
