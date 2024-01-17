@@ -40,7 +40,7 @@ def parse_training_command_line_arguments(command_line_args=None):
 
     baseline_configs.add_argument('--models', nargs='+',
                         choices=['Lasso', 'LinearSVR', 'MLP',
-                                  'PLS', 'Ridge', 'RF', 'XGB'],
+                                 'PLS', 'Ridge', 'RF', 'XGB'],
                         help='Sklearn models to train.')
     
     baseline_configs.add_argument('--random_state', type=int,
