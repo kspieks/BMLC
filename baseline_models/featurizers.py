@@ -181,7 +181,7 @@ def calc_avalon_count_fp(smi, nBits=512):
     # convert rdkit.DataStructs.cDataStructs.UIntSparseIntVect to np.array
     fp = pyAvalonTools.GetAvalonCountFP(mol, nBits=nBits)
     
-    return np.array(fp)
+    return rdkit_to_np(fp, nBits)
 
 
 @register_features_generator('avalon_bit')
@@ -190,7 +190,7 @@ def calc_avalon_bit_fp(smi, nBits=512):
     # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
     fp = pyAvalonTools.GetAvalonFP(mol, nBits=nBits)
     
-    return np.array(fp)
+    return rdkit_to_np(fp, nBits)
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetMACCSKeysFingerprint
