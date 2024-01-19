@@ -20,24 +20,25 @@ sns.set_style('darkgrid', {'axes.edgecolor': '0.2',
 COLOR = '#721f81'  # purple
 
 def fit_linear(X, y):
-    """Use OLS to fit a regression line"""
-    model = linear_model.LinearRegression()
+    """
+    Use OLS to fit a regression line.
+    Fit the y-intercept. If set to false, then the data is assumed to be centered (i.e., y-intercept = 0).
+    """
+    model = linear_model.LinearRegression(fit_intercept=True, n_jobs=1)
     model.fit(X, y)
     return model
 
-def fit_quadratic(X, y):
-    """Use OLS with polynomial order 2"""
-    model = make_pipeline(PolynomialFeatures(2), linear_model.LinearRegression())
+def fit_poly(X, y, degree=2):
+    """Use OLS with polynomial"""
+    model = make_pipeline(PolynomialFeatures(degree), linear_model.LinearRegression(fit_intercept=True, n_jobs=1))
     model.fit(X, y)
     return model
 
-def draw_best_fit(X, y, ax, estimator='linear', **kwargs):
-    estimators = {
-        'linear': fit_linear,
-        'quadratic': fit_quadratic
-    }
-    
-    estimator = estimators[estimator]
+def draw_best_fit(X, y, ax=None, estimator='linear', **kwargs):
+    """
+    Draws the best fit line to the data.
+    estimator should be either "linear" or "polyN" such that N is an integer > 1.
+    """
     
     # check that X and y are the same length
     assert len(X) == len(y)
@@ -53,23 +54,29 @@ def draw_best_fit(X, y, ax, estimator='linear', **kwargs):
     assert y.ndim == 1
     
     # use the estimator to fit the data
-    model = estimator(X, y)
-    
+    if estimator in ['linear', 'poly1']:
+        model = fit_linear(X, y)
+    else:
+        degree = int(estimator.split('poly')[-1])
+        if degree < 2:
+            msg = f'Polynomial degree must be >= 2 e.g, "poly2"". Estimator argument was {estimator}.'
+            raise ValueError(msg)
+        model = fit_poly(X, y, degree=degree)
+
     # get the current working axis
     ax = ax or plt.gca()
     
-    # Plot line of best fit onto the axes that were passed in.
-    # TODO: determine if xlim or X.min(), X.max() are better params
+    # plot line of best fit onto the axes that were passed in.
     xr = np.linspace(*ax.get_xlim(), num=100)
     
     label = f"best fit: $R^2$ = {r2_score(X, y):0.3f}"
     ax.plot(xr, model.predict(xr[:, np.newaxis]), label=label, **kwargs)
     return ax
 
-def draw_identity(ax, **kwargs):
+def draw_identity(ax=None, offset=0, **kwargs):
     ax = ax or plt.gca()
     points = np.linspace(*ax.get_xlim(), num=100)
-    ax.plot(points, points, **kwargs)
+    ax.plot(points, offset + points, **kwargs)
     
     return ax
 
