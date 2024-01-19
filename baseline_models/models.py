@@ -54,6 +54,7 @@ def get_RF(trial, random_state=42):
     params = {
         "n_estimators": trial.suggest_int("n_estimators", low=50, high=300, step=25),
         "max_depth": trial.suggest_int("max_depth", 3, 15),
+        "min_samples_leaf": trial.suggest_int("min_samples_leaf", 1, 5),
         "random_state": random_state,
     }
 
