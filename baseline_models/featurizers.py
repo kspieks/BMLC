@@ -37,6 +37,7 @@ def rdkit_to_np(vect, num_bits):
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetHashedMorganFingerprint
+# https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetMorganGenerator
 @register_features_generator('morgan_count')
 def calc_morgan_count_fp(smi,
                          radius=2,
@@ -70,6 +71,7 @@ def calc_morgan_bit_fp(smi,
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetHashedAtomPairFingerprint
+# https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetAtomPairGenerator
 @register_features_generator('atompair_count')
 def calc_atompair_count_fp(smi,
                            min_path_len=1,
@@ -192,6 +194,7 @@ def calc_avalon_bit_fp(smi, nBits=512):
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetMACCSKeysFingerprint
+# http://rdkit.org/docs/source/rdkit.Chem.MACCSkeys.html
 @register_features_generator('MACCS')
 def calc_MACCS_fp(smi):
     mol = Chem.MolFromSmiles(smi)
