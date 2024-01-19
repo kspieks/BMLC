@@ -14,8 +14,6 @@ except ImportError:
                       'pip install git+https://github.com/bp-kelley/descriptastorus '
                       'to use RDKit 2D features.')
 
-params = Chem.SmilesParserParams()
-params.removeHs = False
 
 _FP_FEATURIZERS = {}
 
@@ -44,9 +42,8 @@ def calc_morgan_count_fp(smi,
                          radius=2,
                          num_bits=2048,
                          include_chirality=True,
-                         params=params,
                          ):
-    mol = Chem.MolFromSmiles(smi, params)
+    mol = Chem.MolFromSmiles(smi)
     morgan_gen = rdFingerprintGenerator.GetMorganGenerator(
         radius=radius,
         fpSize=num_bits,
@@ -61,9 +58,8 @@ def calc_morgan_bit_fp(smi,
                        radius=2,
                        num_bits=2048,
                        include_chirality=True,
-                       params=params,
                        ):
-    mol = Chem.MolFromSmiles(smi, params)
+    mol = Chem.MolFromSmiles(smi)
     morgan_gen = rdFingerprintGenerator.GetMorganGenerator(
         radius=radius,
         fpSize=num_bits,
@@ -80,9 +76,8 @@ def calc_atompair_count_fp(smi,
                            max_path_len=30,
                            num_bits=2048,
                            include_chirality=True,
-                           params=params,
                            ):
-    mol = Chem.MolFromSmiles(smi, params)
+    mol = Chem.MolFromSmiles(smi)
     atompair_gen = rdFingerprintGenerator.GetAtomPairGenerator(
         minDistance=min_path_len,
         maxDistance=max_path_len,
@@ -99,9 +94,8 @@ def calc_atompair_bit_fp(smi,
                          max_path_len=30,
                          num_bits=2048,
                          include_chirality=True,
-                         params=params,
                          ):
-    mol = Chem.MolFromSmiles(smi, params)
+    mol = Chem.MolFromSmiles(smi)
     atompair_gen = rdFingerprintGenerator.GetAtomPairGenerator(
         minDistance=min_path_len,
         maxDistance=max_path_len,
@@ -113,11 +107,8 @@ def calc_atompair_bit_fp(smi,
 
 
 @register_features_generator('Avalon')
-def calc_avalon_fp(smi,
-                   nBits=512,
-                   params=params,
-                   ):
-    mol = Chem.MolFromSmiles(smi, params)
+def calc_avalon_fp(smi, nBits=512):
+    mol = Chem.MolFromSmiles(smi)
     # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
     fp = pyAvalonTools.GetAvalonFP(mol, nBits=nBits)
     
@@ -126,10 +117,8 @@ def calc_avalon_fp(smi,
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetMACCSKeysFingerprint
 @register_features_generator('MACCS')
-def calc_MACCS_fp(smi,
-                  params=params,
-                  ):
-    mol = Chem.MolFromSmiles(smi, params)
+def calc_MACCS_fp(smi):
+    mol = Chem.MolFromSmiles(smi)
     # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
     fp = MACCSkeys.GenMACCSKeys(mol)
 
@@ -137,9 +126,7 @@ def calc_MACCS_fp(smi,
 
 
 @register_features_generator('MQN')
-def calc_MQN_fp(smi,
-                params=params,
-                ):
+def calc_MQN_fp(smi):
     """
     Molecular Quantun Numbers (MQN) Descriptors.
     Consists of 4 categories, but only 42 features total:
