@@ -31,7 +31,7 @@ def register_features_generator(features_generator_name):
 
 def rdkit_to_np(vect, num_bits):
     """Helper function to convert a sparse vector from RDKit to a dense numpy vector."""
-    arr = np.zeros((num_bits,))  # np.zeros((1,))
+    arr = np.zeros((num_bits,))
     DataStructs.ConvertToNumpyArray(vect, arr)  # overwrites arr
     return arr
 
