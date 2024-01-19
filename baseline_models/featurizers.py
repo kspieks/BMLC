@@ -106,8 +106,18 @@ def calc_atompair_bit_fp(smi,
     return atompair_gen.GetFingerprintAsNumPy(mol)
 
 
-@register_features_generator('Avalon')
-def calc_avalon_fp(smi, nBits=512):
+# https://www.rdkit.org/docs/source/rdkit.Avalon.pyAvalonTools.html
+@register_features_generator('avalon_count')
+def calc_avalon_count_fp(smi, nBits=512):
+    mol = Chem.MolFromSmiles(smi)
+    # convert rdkit.DataStructs.cDataStructs.UIntSparseIntVect to np.array
+    fp = pyAvalonTools.GetAvalonCountFP(mol, nBits=nBits)
+    
+    return np.array(fp)
+
+
+@register_features_generator('avalon_bit')
+def calc_avalon_bit_fp(smi, nBits=512):
     mol = Chem.MolFromSmiles(smi)
     # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
     fp = pyAvalonTools.GetAvalonFP(mol, nBits=nBits)
