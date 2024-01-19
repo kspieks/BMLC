@@ -5,7 +5,7 @@ For all, the input is a SMILES string and the return is a 1D numpy array of the 
 import numpy as np
 from rdkit import Chem, DataStructs
 from rdkit.Avalon import pyAvalonTools
-from rdkit.Chem import AllChem, Descriptors, MACCSkeys, rdMolDescriptors
+from rdkit.Chem import AllChem, Descriptors, MACCSkeys, rdMolDescriptors, rdFingerprintGenerator
 
 try:
     from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
@@ -43,24 +43,34 @@ def rdkit_to_np(vect, nbits):
 def calc_morgan_counts_fp(smi,
                           radius=2,
                           num_bits=2048,
+                          include_chirality=True,
                           params=params,
                           ):
     mol = Chem.MolFromSmiles(smi, params)
-    feature_vec = AllChem.GetHashedMorganFingerprint(mol, radius, nBits=num_bits)
-    # convert rdkit.DataStructs.cDataStructs.UIntSparseIntVect to np.array
-    return rdkit_to_np(feature_vec, num_bits)
+    morgan_gen = rdFingerprintGenerator.GetMorganGenerator(
+        radius=radius,
+        fpSize=num_bits,
+        includeChirality=include_chirality,
+    )
+
+    return morgan_gen.GetCountFingerprintAsNumPy(mol)
 
 
 @register_features_generator('morgan_binary')
 def calc_morgan_binary_fp(smi,
                           radius=2,
                           num_bits=2048,
+                          include_chirality=True,
                           params=params,
                           ):
     mol = Chem.MolFromSmiles(smi, params)
-    feature_vec = AllChem.GetMorganFingerprintAsBitVect(mol, radius, nBits=num_bits)
-    # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
-    return rdkit_to_np(feature_vec, num_bits)
+    morgan_gen = rdFingerprintGenerator.GetMorganGenerator(
+        radius=radius,
+        fpSize=num_bits,
+        includeChirality=include_chirality,
+    )
+    
+    return morgan_gen.GetFingerprintAsNumPy(mol)
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetHashedAtomPairFingerprint
