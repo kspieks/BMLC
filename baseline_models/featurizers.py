@@ -74,21 +74,42 @@ def calc_morgan_bit_fp(smi,
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetHashedAtomPairFingerprint
-@register_features_generator('AtomPair')
-def calc_atom_pair_fp(smi, 
-                      minPathLen=1, 
-                      maxPathLen=30, 
-                      nbits=2048, 
-                      params=params,
-                      ):
+@register_features_generator('atompair_count')
+def calc_atompair_count_fp(smi,
+                           min_path_len=1,
+                           max_path_len=30,
+                           num_bits=2048,
+                           include_chirality=True,
+                           params=params,
+                           ):
     mol = Chem.MolFromSmiles(smi, params)
-    fp = rdMolDescriptors.GetHashedAtomPairFingerprint(mol,
-                                   minLength=minPathLen,
-                                   maxLength=maxPathLen,
-                                   nBits=nbits,
-                                  )
-    # convert rdkit.DataStructs.cDataStructs.IntSparseIntVect to np.array
-    return rdkit_to_np(fp, nbits)
+    atompair_gen = rdFingerprintGenerator.GetAtomPairGenerator(
+        minDistance=min_path_len,
+        maxDistance=max_path_len,
+        fpSize=num_bits,
+        includeChirality=include_chirality,
+    )
+
+    return atompair_gen.GetCountFingerprintAsNumPy(mol)
+
+
+@register_features_generator('atompair_bit')
+def calc_atompair_bit_fp(smi,
+                         min_path_len=1,
+                         max_path_len=30,
+                         num_bits=2048,
+                         include_chirality=True,
+                         params=params,
+                         ):
+    mol = Chem.MolFromSmiles(smi, params)
+    atompair_gen = rdFingerprintGenerator.GetAtomPairGenerator(
+        minDistance=min_path_len,
+        maxDistance=max_path_len,
+        fpSize=num_bits,
+        includeChirality=include_chirality,
+    )
+
+    return atompair_gen.GetFingerprintAsNumPy(mol)
 
 
 @register_features_generator('Avalon')
