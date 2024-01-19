@@ -2,7 +2,7 @@ from sklearn import linear_model
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.neural_network import MLPRegressor
-from sklearn.svm import LinearSVR
+from sklearn.svm import SVR, LinearSVR
 from xgboost import XGBRegressor
 
 
@@ -29,6 +29,22 @@ def get_LinearSVR(trial, random_state=42):
     }
 
     regressor_obj = LinearSVR(**params)
+
+    return regressor_obj
+
+@register_model_generator('SVR')
+def get_SVR(trial, random_state=42):
+    """
+    Random state is not used for PLS. 
+    It is passed in to be consistent with the syntax of the other models.
+    """
+    params = {
+        "kernel": 'rbf',
+        "C": trial.suggest_float("C", 1e-5, 1e5, log=True),
+        "max_iter": 500,
+    }
+
+    regressor_obj = SVR(**params)
 
     return regressor_obj
 

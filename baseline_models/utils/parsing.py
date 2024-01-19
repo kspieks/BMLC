@@ -43,7 +43,7 @@ def parse_training_command_line_arguments(command_line_args=None):
                         help='Fingerprint featurizers to use.')
 
     baseline_configs.add_argument('--models', nargs='+',
-                        choices=['Lasso', 'LinearSVR', 'MLP',
+                        choices=['Lasso', 'LinearSVR', 'SVR', 'MLP',
                                  'PLS', 'Ridge', 'RF', 'XGB'],
                         help='Sklearn models to train.')
     
