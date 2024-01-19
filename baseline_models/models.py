@@ -23,7 +23,7 @@ def register_model_generator(features_generator_name):
 @register_model_generator('LinearSVR')
 def get_LinearSVR(trial, random_state=42):
     params = {
-        "C": trial.suggest_float("C", 1e-6, 1e6, log=True),
+        "C": trial.suggest_float("C", 1e-5, 1e5, log=True),
         "max_iter": 1000,
         "random_state": random_state,
     }
@@ -112,7 +112,7 @@ def get_PLS(trial, random_state=42):
 @register_model_generator('Lasso')
 def get_Lasso(trial, random_state=42):
     params = {
-        "alpha": trial.suggest_float("alpha", 1e-6, 1e6, log=True),
+        "alpha": trial.suggest_float("alpha", 1e-5, 1e5, log=True),
         "random_state": random_state,
     }
     regressor_obj = linear_model.Lasso(**params)
@@ -123,7 +123,7 @@ def get_Lasso(trial, random_state=42):
 @register_model_generator('Ridge')
 def get_Ridge(trial, random_state=42):
     params = {
-        "alpha": trial.suggest_float("alpha", 1e-6, 1e6, log=True),
+        "alpha": trial.suggest_float("alpha", 1e-5, 1e5, log=True),
         "random_state": random_state,
     }
     regressor_obj = linear_model.Ridge(**params)
