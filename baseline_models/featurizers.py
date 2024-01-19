@@ -39,13 +39,13 @@ def rdkit_to_np(vect, num_bits):
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetHashedMorganFingerprint
-@register_features_generator('morgan_counts')
-def calc_morgan_counts_fp(smi,
-                          radius=2,
-                          num_bits=2048,
-                          include_chirality=True,
-                          params=params,
-                          ):
+@register_features_generator('morgan_count')
+def calc_morgan_count_fp(smi,
+                         radius=2,
+                         num_bits=2048,
+                         include_chirality=True,
+                         params=params,
+                         ):
     mol = Chem.MolFromSmiles(smi, params)
     morgan_gen = rdFingerprintGenerator.GetMorganGenerator(
         radius=radius,
@@ -56,13 +56,13 @@ def calc_morgan_counts_fp(smi,
     return morgan_gen.GetCountFingerprintAsNumPy(mol)
 
 
-@register_features_generator('morgan_binary')
-def calc_morgan_binary_fp(smi,
-                          radius=2,
-                          num_bits=2048,
-                          include_chirality=True,
-                          params=params,
-                          ):
+@register_features_generator('morgan_bit')
+def calc_morgan_bit_fp(smi,
+                       radius=2,
+                       num_bits=2048,
+                       include_chirality=True,
+                       params=params,
+                       ):
     mol = Chem.MolFromSmiles(smi, params)
     morgan_gen = rdFingerprintGenerator.GetMorganGenerator(
         radius=radius,

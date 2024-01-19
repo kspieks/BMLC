@@ -33,9 +33,10 @@ def parse_training_command_line_arguments(command_line_args=None):
     
     baseline_configs.add_argument('--featurizers', nargs='+',
                         # default='morgan',
-                        choices=['morgan_counts', 'morgan_binary',
+                        choices=['atompair_count', 'atompair_bit',
+                                 'morgan_count', 'morgan_bit',
                                  'rdkit_2d', 'rdkit_2d_normalized',
-                                 'AtomPair', 'Avalon', 'MACCS', 'MQN'],
+                                 'Avalon', 'MACCS', 'MQN'],
                         help='Fingerprint featurizers to use.')
 
     baseline_configs.add_argument('--models', nargs='+',
