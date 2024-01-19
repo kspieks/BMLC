@@ -106,6 +106,39 @@ def calc_atompair_bit_fp(smi,
     return atompair_gen.GetFingerprintAsNumPy(mol)
 
 
+# https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetRDKitFPGenerator
+@register_features_generator('rdkit_count')
+def calc_rdkit_count_fp(smi,
+                        min_path_len=1,
+                        max_path_len=7,
+                        num_bits=2048,
+                        ):
+    mol = Chem.MolFromSmiles(smi)
+    rdkit_gen = rdFingerprintGenerator.GetRDKitFPGenerator(
+        minPath=min_path_len,
+        maxPath=max_path_len,
+        fpSize=num_bits,
+    )
+
+    return rdkit_gen.GetCountFingerprintAsNumPy(mol)
+
+
+@register_features_generator('rdkit_bit')
+def calc_rdkit_bit_fp(smi,
+                      min_path_len=1,
+                      max_path_len=7,
+                      num_bits=2048,
+                      ):
+    mol = Chem.MolFromSmiles(smi)
+    rdkit_gen = rdFingerprintGenerator.GetRDKitFPGenerator(
+        minPath=min_path_len,
+        maxPath=max_path_len,
+        fpSize=num_bits,
+    )
+
+    return rdkit_gen.GetFingerprintAsNumPy(mol)
+
+
 # https://www.rdkit.org/docs/source/rdkit.Avalon.pyAvalonTools.html
 @register_features_generator('avalon_count')
 def calc_avalon_count_fp(smi, nBits=512):

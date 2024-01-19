@@ -35,6 +35,7 @@ def parse_training_command_line_arguments(command_line_args=None):
                         # default='morgan',
                         choices=['atompair_count', 'atompair_bit',
                                  'morgan_count', 'morgan_bit',
+                                 'rdkit_count', 'rdkit_bit',
                                  'avalon_count', 'avalon_bit',
                                  'rdkit_2d', 'rdkit_2d_normalized',
                                  'MACCS', 'MQN'],
