@@ -104,9 +104,13 @@ def parse_prediction_command_line_arguments(command_line_args=None):
                         whose features will be concatenated as r + (p-r).')
     
     parser.add_argument('--featurizer', type=str,
-                        choices=['morgan_counts', 'morgan_binary',
+                        choices=['atompair_count', 'atompair_bit',
+                                 'morgan_count', 'morgan_bit',
+                                 'rdkit_count', 'rdkit_bit',
+                                 'topologicaltorsion_count', 'topologicaltorsion_bit',
+                                 'avalon_count', 'avalon_bit',
                                  'rdkit_2d', 'rdkit_2d_normalized',
-                                 'AtomPair', 'Avalon', 'MACCS', 'MQN'],
+                                 'MACCS', 'MQN'],
                         help='Fingerprint featurizer to use.')
     parser.add_argument('--n_cpus_featurize', type=int, default=2,
                         help='Number of CPUs to use in parallel when creating feature vectors.')
