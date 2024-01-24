@@ -99,6 +99,8 @@ class BaselineML(object):
                 raise ValueError(msg)
 
             for model_type in self.models:
+                self.logger.info("*" * 44)
+                self.logger.info(f"featurizer: {featurizer}")
                 self.logger.info(f"model_type: {model_type}")
                 self.logger.info(f"X.shape: {X.shape}")
                 self.logger.info(f"y.shape: {y.shape}")
