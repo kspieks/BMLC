@@ -1,6 +1,6 @@
 import pandas as pd
 from scipy import stats
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.metrics import mean_absolute_error, root_mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler
 
 from .models import _MODELS
@@ -13,7 +13,7 @@ def calc_regression_metrics_naive(y_true, y_pred):
     since the naive baseline predicts a constant y_pred vector. 
     """
     MAE = mean_absolute_error(y_true, y_pred)
-    RMSE = mean_squared_error(y_true, y_pred, squared=False)
+    RMSE = root_mean_squared_error(y_true, y_pred)
     R2 = r2_score(y_true, y_pred)
 
     return (MAE, RMSE, R2)
@@ -21,7 +21,7 @@ def calc_regression_metrics_naive(y_true, y_pred):
 def calc_regression_metrics(y_true, y_pred):
     """Calculate performance metrics for the regression model"""
     MAE = mean_absolute_error(y_true, y_pred)
-    RMSE = mean_squared_error(y_true, y_pred, squared=False)
+    RMSE = root_mean_squared_error(y_true, y_pred)
     R2 = r2_score(y_true, y_pred)
     kendalltau = stats.kendalltau(y_true, y_pred)
     spearman = stats.spearmanr(y_true, y_pred)
