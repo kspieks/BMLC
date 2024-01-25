@@ -214,7 +214,7 @@ def calc_MQN_fp(smi):
     (3) Polarity counts
     (4) Topology counts
     """
-    mol = Chem.MolFromSmiles(smi, params)
+    mol = Chem.MolFromSmiles(smi)
     # features are returned as a list
     fp = rdMolDescriptors.MQNs_(mol)
 
