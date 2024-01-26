@@ -112,3 +112,54 @@ def draw_parity_plot(y_true, y_pred):
     ax.set_xlabel('True Value')
     ax.set_xlabel('Predicted Value')
     return fig, ax
+
+
+def plot_residuals(y_true, y_pred,
+                   gridkw=dict(width_ratios=[6, 2]),
+                   color=COLOR,
+                   alpha=0.8,
+                   size=6,
+                   cutoff=0,
+                   ):
+    fig, (ax1, ax2) = plt.subplots(1, 2, gridspec_kw=gridkw, sharey=True, figsize=(8, 5))
+
+    residuals = y_true - y_pred
+    ax1 = sns.scatterplot(x=y_pred, y=residuals,
+                          size=size,
+                          ccolor=COLOR,
+                          alpha=alpha,
+                          legend=False,
+                          ax=ax1,
+                          )
+    limit = 1.1 * max(abs(residuals))
+    ax1.set_ylim(-limit, limit)
+    ax1.set_xlabel('Predicted Value')
+    ax1.set_ylabel('Residual')
+
+    ax2 = sns.histplot(y=residuals,
+                       color=COLOR,
+                       bins=20,
+                       stat='count',
+                       edgecolor='k',
+                       ax=ax2,
+                       )
+    ax2.set_xlabel('Distribution')
+    ax2.yaxis.tick_right()
+    ax2.tick_params(axis='y', labelright='on')
+
+    # add horizontal line
+    ax1.axhline(y=0, color='k', ls='--')
+    ax2.axhline(y=0, color='k', ls='--')
+
+    # cutoff
+    if cutoff > 0:
+        abs_error = abs(residuals)
+        print(f'{sum(abs_error < cutoff) / len(abs_error) * 100:.1f}% of the predictions are within {cutoff} unit of the true value')
+        ax1.axhline(y=-cutoff, color='k', alpha=0.5, ls='--')
+        ax1.axhline(y=cutoff, color='k', alpha=0.5, ls='--')
+        ax2.axhline(y=-cutoff, color='k', alpha=0.5, ls='--')
+        ax2.axhline(y=cutoff, color='k', alpha=0.5, ls='--')
+
+    plt.subplots_adjust(wspace=0.05, hspace=0)
+    plt.tight_layout()
+    return fig, (ax1, ax2)
