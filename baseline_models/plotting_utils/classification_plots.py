@@ -89,8 +89,8 @@ def make_confusion_matrix(cm,
             tp, fp, fn, tp = cm.ravel()
             
             # metrics for binary confusion matrices
-            precision = tp / (tp + fp)      # cm [1,1] / sum(cm[:,1])
-            recall = tp / (tp + fn)         # cm[1,1] / sum (cm[1, :])
+            precision = tp / (tp + fp)      # cm[1,1] / sum(cm[:,1])
+            recall = tp / (tp + fn)         # cm[1,1] / sum(cm[1, :])
             f1_score = 2 * tp / (2 * tp + fn + fp)  # 2*precision*recall / (precision + recall)
             stats_text = f"\n\nAccuracy={accuracy:0.2f}\nPrecision={precision:0.2f}\nRecall={recall:0.2f}\nF1 Score={f1_score:0.2f}"
         else:
