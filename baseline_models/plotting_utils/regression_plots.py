@@ -4,6 +4,7 @@ Collection of functions to plot results from a regression model.
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from scipy import stats
 from sklearn import linear_model
 from sklearn.metrics import r2_score
 from sklearn.pipeline import make_pipeline
@@ -34,7 +35,12 @@ def fit_poly(X, y, degree=2):
     model.fit(X, y)
     return model
 
-def draw_best_fit(X, y, ax=None, estimator='linear', **kwargs):
+def draw_best_fit(X, y,
+                  ax=None,
+                  estimator='linear',
+                  metric='r2_score',
+                  **kwargs,
+                  ):
     """
     Draws the best fit line to the data.
     estimator should be either "linear" or "polyN" such that N is an integer > 1.
@@ -69,7 +75,13 @@ def draw_best_fit(X, y, ax=None, estimator='linear', **kwargs):
     # plot line of best fit onto the axes that were passed in.
     xr = np.linspace(*ax.get_xlim(), num=100)
     
-    label = f"best fit: $R^2$ = {r2_score(X, y):0.3f}"
+    if metric == 'r2_score':
+        label = f"best fit: $R^2$ = {r2_score(X, y):0.3f}"
+    elif metric == 'pearson_r':
+        label = f'Pearson r = {stats.pearsonr(X.flatten(), y).statistic:0.3f}'
+    else:
+        label = None
+
     ax.plot(xr, model.predict(xr[:, np.newaxis]), label=label, **kwargs)
     return ax
 
@@ -110,7 +122,30 @@ def draw_parity_plot(y_true, y_pred):
     ax.legend(fontsize=13)
 
     ax.set_xlabel('True Value')
-    ax.set_xlabel('Predicted Value')
+    ax.set_ylabel('Predicted Value')
+    return fig, ax
+
+
+def plot_abs_err_vs_uncertainties(uncertainties, abs_error):
+    fig, ax = plt.subplots(figsize=(6, 6))
+    ax = sns.scatterplot(x=uncertainties, y=abs_error,
+                        color=COLOR, alpha=0.7,
+                        size=6,
+                        legend=False,
+                        ax=ax,
+                        )
+
+    ax = draw_best_fit(uncertainties, abs_error, ax, metric='pearson_r',
+                       linestyle='--',
+                       color='k', alpha=0.9,
+                       linewidth=1.75,
+                       )
+
+    ax.legend(fontsize=13)
+
+    ax.set_xlabel('Uncertainty Estimation')
+    ax.set_ylabel('Absolute Error')
+
     return fig, ax
 
 
@@ -126,7 +161,7 @@ def plot_residuals(y_true, y_pred,
     residuals = y_true - y_pred
     ax1 = sns.scatterplot(x=y_pred, y=residuals,
                           size=size,
-                          ccolor=COLOR,
+                          color=COLOR,
                           alpha=alpha,
                           legend=False,
                           ax=ax1,
