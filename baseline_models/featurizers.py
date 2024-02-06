@@ -105,36 +105,23 @@ def calc_rdkit_fp(smi,
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetTopologicalTorsionGenerator
-@register_features_generator('topologicaltorsion_count')
+@register_features_generator('topologicaltorsion')
 def calc_topologicaltorsion_count_fp(smi,
-                                     torsion_atom_count=4,
-                                     num_bits=2048,
-                                     include_chirality=True,
+                                     count=True,
+                                     torsionAtomCount=4,
+                                     fpSize=2048,
+                                     includeChirality=True,
                                      ):
     mol = Chem.MolFromSmiles(smi)
     toptorsion_gen = rdFingerprintGenerator.GetTopologicalTorsionGenerator(
-        includeChirality=include_chirality,
-        torsionAtomCount=torsion_atom_count,
-        fpSize=num_bits,
+        fpSize=fpSize,
+        torsionAtomCount=torsionAtomCount,
+        includeChirality=includeChirality,
     )
 
-    return toptorsion_gen.GetCountFingerprintAsNumPy(mol)
-
-
-@register_features_generator('topologicaltorsion_bit')
-def calc_topologicaltorsion_bit_fp(smi,
-                                   torsion_atom_count=4,
-                                   num_bits=2048,
-                                   include_chirality=True,
-                                   ):
-    mol = Chem.MolFromSmiles(smi)
-    toptorsion_gen = rdFingerprintGenerator.GetTopologicalTorsionGenerator(
-        includeChirality=include_chirality,
-        torsionAtomCount=torsion_atom_count,
-        fpSize=num_bits,
-    )
-
-    return toptorsion_gen.GetFingerprintAsNumPy(mol)
+    return getattr(toptorsion_gen,
+            f'Get{"Count" if count else ""}FingerprintAsNumPy'
+            )(mol)
 
 
 # https://www.rdkit.org/docs/source/rdkit.Avalon.pyAvalonTools.html
