@@ -5,10 +5,16 @@ For all, the input is a SMILES string and the return is a 1D numpy array of the 
 import numpy as np
 from rdkit import Chem, DataStructs
 from rdkit.Avalon import pyAvalonTools
-from rdkit.Chem import AllChem, Descriptors, MACCSkeys, rdMolDescriptors, rdFingerprintGenerator
+from rdkit.Chem import (Descriptors, MACCSkeys, 
+                        rdFingerprintGenerator,
+                        rdMolDescriptors,
+                        )
 
 try:
-    from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
+    from descriptastorus.descriptors import (CURRENT_VERSION, RDKIT_PROPS,
+                                             rdDescriptors,
+                                             rdNormalizedDescriptors,
+                                             )
 except ImportError:
     raise ImportError('Failed to import descriptastorus. Please install descriptastorus via '
                       'pip install git+https://github.com/bp-kelley/descriptastorus '
@@ -168,9 +174,11 @@ def calc_MQN_fp(smi):
 
 # https://github.com/bp-kelley/descriptastorus/blob/master/descriptastorus/descriptors/rdDescriptors.py#L287
 @register_features_generator('rdkit_2d')
-def calc_rdkit_2d_fp(smi):
+def calc_rdkit_2d_fp(smi, properties=RDKIT_PROPS[CURRENT_VERSION]):
     """
-    Generates list of 200 2D features for a molecule.
+    Generates 2D features for a molecule.
+    By default, it generates an array containing 200 features,
+    but this can be changed by modifying which properties are calculated.
 
     There are two major categories: 
     (1) physicochemical properties 
@@ -179,16 +187,20 @@ def calc_rdkit_2d_fp(smi):
 
     Just clone the repo and then run python setup.py install within the env 
     """
-    generator = rdDescriptors.RDKit2D()
+    generator = rdDescriptors.RDKit2D(properties=properties)
     fp = generator.process(smi)[1:]
 
     return np.array(fp)
 
 
 @register_features_generator('rdkit_2d_normalized')
-def calc_rdkit_2d_normalized_fp(smi):
-    """Generates list of 200 2D normalized features for a molecule."""
-    generator = rdNormalizedDescriptors.RDKit2DNormalized()
+def calc_rdkit_2d_normalized_fp(smi, properties=RDKIT_PROPS[CURRENT_VERSION]):
+    """
+    Generates 2D normalized features for a molecule.
+    By default, it generates an array containing 200 features,
+    but this can be changed by modifying which properties are calculated.
+    """
+    generator = rdNormalizedDescriptors.RDKit2DNormalized(properties=properties)
     fp = generator.process(smi)[1:]
 
     return np.array(fp)
