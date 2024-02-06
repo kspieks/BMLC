@@ -125,21 +125,16 @@ def calc_topologicaltorsion_count_fp(smi,
 
 
 # https://www.rdkit.org/docs/source/rdkit.Avalon.pyAvalonTools.html
-@register_features_generator('avalon_count')
-def calc_avalon_count_fp(smi, nBits=512):
+@register_features_generator('avalon')
+def calc_avalon_fp(smi, nBits=512, count=True):
     mol = Chem.MolFromSmiles(smi)
-    # convert rdkit.DataStructs.cDataStructs.UIntSparseIntVect to np.array
-    fp = pyAvalonTools.GetAvalonCountFP(mol, nBits=nBits)
-    
-    return rdkit_to_np(fp, nBits)
 
+    fp = getattr(pyAvalonTools,
+                 f'GetAvalon{"Count" if count else ""}FP'
+                 )(mol)
 
-@register_features_generator('avalon_bit')
-def calc_avalon_bit_fp(smi, nBits=512):
-    mol = Chem.MolFromSmiles(smi)
-    # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
-    fp = pyAvalonTools.GetAvalonFP(mol, nBits=nBits)
-    
+    # convert rdkit.DataStructs.cDataStructs.UIntSparseIntVect if count = True
+    # or rdkit.DataStructs.cDataStructs.ExplicitBitVect if count = False to np.array
     return rdkit_to_np(fp, nBits)
 
 
