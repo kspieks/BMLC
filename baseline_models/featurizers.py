@@ -4,6 +4,7 @@ For all, the input is a SMILES string and the return is a 1D numpy array of the 
 """
 import numpy as np
 from rdkit import Chem, DataStructs
+from rdkit.Chem.AtomPairs import Sheridan
 from rdkit.Avalon import pyAvalonTools
 from rdkit.Chem import (Descriptors, MACCSkeys, 
                         rdFingerprintGenerator,
@@ -20,6 +21,7 @@ except ImportError:
                       'pip install git+https://github.com/bp-kelley/descriptastorus '
                       'to use RDKit 2D features.')
 
+from .utils.hashing_utils import _hash_fold
 
 _FP_FEATURIZERS = {}
 
@@ -87,7 +89,14 @@ def calc_atompair_fp(smi,
             )(mol)
 
 
+# https://rdkit.org/docs/source/rdkit.Chem.AtomPairs.Sheridan.html
+@register_features_generator('donorpair')
+def get_donorpair_fp(smi, fpSize=1024):
+    mol = Chem.MolFromSmiles(smi)
+    sparse_vec = Sheridan.GetBPFingerprint(mol)
+    nze = sparse_vec.GetNonzeroElements()
 
+    return _hash_fold(nze, fpSize)
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetRDKitFPGenerator
