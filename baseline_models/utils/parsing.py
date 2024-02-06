@@ -19,6 +19,10 @@ def parse_training_command_line_arguments(command_line_args=None):
     parser.add_argument('--log_name', type=str, default='train',
                         help='Filename for the training log.')
 
+    parser.add_argument('--featurizer_yaml_path', type=str,
+                        help='Path to a yaml file with settings for the featurizer(s). \
+                        Suported featurizers include atompair, avalon, MACCS, morgan, MQN, rdkit, \
+                        rdkit_2d, rdkit_2d_normalized, and topologicaltorsion.')
     
     baseline_configs = parser.add_argument_group('baseline_configs')
     baseline_configs.add_argument('--data_path', type=str,
@@ -30,17 +34,6 @@ def parse_training_command_line_arguments(command_line_args=None):
     baseline_configs.add_argument('--rxn_mode', action='store_true', default=False,
                         help='Boolean indicating whether the smiles column contains reaction SMILES \
                         whose features will be concatenated as r + (p-r).')
-    
-    baseline_configs.add_argument('--featurizers', nargs='+',
-                        # default='morgan',
-                        choices=['atompair_count', 'atompair_bit',
-                                 'morgan_count', 'morgan_bit',
-                                 'rdkit_count', 'rdkit_bit',
-                                 'topologicaltorsion_count', 'topologicaltorsion_bit',
-                                 'avalon_count', 'avalon_bit',
-                                 'rdkit_2d', 'rdkit_2d_normalized',
-                                 'MACCS', 'MQN'],
-                        help='Fingerprint featurizers to use.')
 
     baseline_configs.add_argument('--models', nargs='+',
                         choices=['Lasso', 'LinearSVR', 'SVR', 'MLP',
