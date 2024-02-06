@@ -206,7 +206,7 @@ def calc_rdkit_2d_normalized_fp(smi, properties=RDKIT_PROPS[CURRENT_VERSION]):
     return np.array(fp)
 
 
-def get_rxn_fp(rxn_smi, featurizer):
+def get_rxn_fp(rxn_smi, featurizer, **params):
     """
     Helper function that creates a fingerprint for a reaction.
 
@@ -214,7 +214,7 @@ def get_rxn_fp(rxn_smi, featurizer):
     SMILES string as input and then return a fingerprint vector.
     """
     rsmi, psmi = rxn_smi.split('>>')
-    fp_r = featurizer(rsmi)
-    fp_p = featurizer(psmi)
+    fp_r = featurizer(rsmi, **params)
+    fp_p = featurizer(psmi, **params)
     
     return np.concatenate((fp_r, fp_p - fp_r))
