@@ -60,40 +60,28 @@ def calc_morgan_fp(smi,
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetHashedAtomPairFingerprint
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetAtomPairGenerator
-@register_features_generator('atompair_count')
-def calc_atompair_count_fp(smi,
-                           min_path_len=1,
-                           max_path_len=30,
-                           num_bits=2048,
-                           include_chirality=True,
-                           ):
+@register_features_generator('atompair')
+def calc_atompair_fp(smi,
+                     count=True,
+                     minDistance=1,
+                     maxDistance=30,
+                     fpSize=2048,
+                     includeChirality=True,
+                     ):
     mol = Chem.MolFromSmiles(smi)
     atompair_gen = rdFingerprintGenerator.GetAtomPairGenerator(
-        minDistance=min_path_len,
-        maxDistance=max_path_len,
-        fpSize=num_bits,
-        includeChirality=include_chirality,
+        minDistance=minDistance,
+        maxDistance=maxDistance,
+        fpSize=fpSize,
+        includeChirality=includeChirality,
     )
+    
+    return getattr(atompair_gen,
+            f'Get{"Count" if count else ""}FingerprintAsNumPy'
+            )(mol)
 
-    return atompair_gen.GetCountFingerprintAsNumPy(mol)
 
 
-@register_features_generator('atompair_bit')
-def calc_atompair_bit_fp(smi,
-                         min_path_len=1,
-                         max_path_len=30,
-                         num_bits=2048,
-                         include_chirality=True,
-                         ):
-    mol = Chem.MolFromSmiles(smi)
-    atompair_gen = rdFingerprintGenerator.GetAtomPairGenerator(
-        minDistance=min_path_len,
-        maxDistance=max_path_len,
-        fpSize=num_bits,
-        includeChirality=include_chirality,
-    )
-
-    return atompair_gen.GetFingerprintAsNumPy(mol)
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetRDKitFPGenerator
