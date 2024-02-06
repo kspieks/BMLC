@@ -85,36 +85,23 @@ def calc_atompair_fp(smi,
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetRDKitFPGenerator
-@register_features_generator('rdkit_count')
-def calc_rdkit_count_fp(smi,
-                        min_path_len=1,
-                        max_path_len=7,
-                        num_bits=2048,
-                        ):
+@register_features_generator('rdkit')
+def calc_rdkit_fp(smi,
+                  count=True,
+                  minPath=1,
+                  maxPath=7,
+                  fpSize=2048,
+                  ):
     mol = Chem.MolFromSmiles(smi)
     rdkit_gen = rdFingerprintGenerator.GetRDKitFPGenerator(
-        minPath=min_path_len,
-        maxPath=max_path_len,
-        fpSize=num_bits,
+        minPath=minPath,
+        maxPath=maxPath,
+        fpSize=fpSize,
     )
 
-    return rdkit_gen.GetCountFingerprintAsNumPy(mol)
-
-
-@register_features_generator('rdkit_bit')
-def calc_rdkit_bit_fp(smi,
-                      min_path_len=1,
-                      max_path_len=7,
-                      num_bits=2048,
-                      ):
-    mol = Chem.MolFromSmiles(smi)
-    rdkit_gen = rdFingerprintGenerator.GetRDKitFPGenerator(
-        minPath=min_path_len,
-        maxPath=max_path_len,
-        fpSize=num_bits,
-    )
-
-    return rdkit_gen.GetFingerprintAsNumPy(mol)
+    return getattr(rdkit_gen,
+            f'Get{"Count" if count else ""}FingerprintAsNumPy'
+            )(mol)
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetTopologicalTorsionGenerator
