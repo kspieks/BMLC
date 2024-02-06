@@ -1,6 +1,6 @@
 import logging
 import os
-
+import yaml
 
 def create_logger(name, log_dir):
     """
@@ -30,3 +30,25 @@ def create_logger(name, log_dir):
     logger.addHandler(fh)
 
     return logger
+
+
+def read_yaml_file(path):
+    """
+    Read an input YAML file and return the parameters as python variables.
+
+    Args:
+        path (str): The input YAML file path to read.
+
+    Returns: dict
+        The content read from the file.
+    """
+    if not isinstance(path, str):
+        raise InputError(f'yaml file path must be a string, got {path} which is a {type(path)}')
+    
+    if not os.path.isfile(path):
+        raise InputError(f'Could not find the YAML file {path}')
+    
+    with open(path, 'r') as f:
+        content = yaml.safe_load(f)
+
+    return content
