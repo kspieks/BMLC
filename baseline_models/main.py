@@ -7,6 +7,7 @@ import optuna
 from optuna.samplers import TPESampler
 import pandas as pd
 from pandarallel import pandarallel
+import yaml
 
 from .featurizers import _FP_FEATURIZERS, get_rxn_fp
 from .training import Objective, callback, naive_baseline, train_model
@@ -20,9 +21,10 @@ class BaselineML(object):
     def __init__(
         self,
         data_path,
+        smiles_column,
         target,
         split_path,
-        featurizers,
+        featurizer_settings,
         models,
         rxn_mode,
         n_cpus_featurize,
@@ -32,11 +34,13 @@ class BaselineML(object):
         save_dir,
         random_state=42,
     ):
+        
         self.data_path = data_path
+        self.smiles_column = smiles_column
         self.target = target
         self.split_path = split_path
 
-        self.featurizers = featurizers
+        self.featurizer_settings = featurizer_settings
         self.models = models
         self.rxn_mode = rxn_mode
 
@@ -75,22 +79,48 @@ class BaselineML(object):
         self.logger.info(f"Test R2 (mean +- 1 std): {df_tmp.R2.mean():.4f} +- "
                             f"{df_tmp.R2.std():.4f}")
 
-
         # calculate input features X (i.e., fingerprint vectors) in parallel
         pandarallel.initialize(nb_workers=self.n_cpus_featurize, progress_bar=True)
-        for featurizer in self.featurizers:
+        for featurizer, parameter_dict in self.featurizer_settings.items():
             self.logger.info("*" * 88)
-            self.logger.info(f"featurizer: {featurizer}")
-            
-            # reaction mode
-            if self.rxn_mode:
-                self.df[featurizer] = self.df.smiles.parallel_apply(get_rxn_fp, featurizer=_FP_FEATURIZERS[featurizer])
+            self.logger.info(f"Calculating {featurizer} features...")
 
-            # molecule mode
-            else:
-                self.df[featurizer] = self.df.smiles.parallel_apply(_FP_FEATURIZERS[featurizer])
+            featurizers = featurizer.split('+')
+            if len(featurizers) != len(parameter_dict['parameters']):
+                msg = "Dimension mismatch!\n"
+                msg += f"There are {len(featurizers)} featurizers specified and "
+                msg += f"{len(parameter_dict['parameters'])} parameter dictionaries specified in the input json file.\n"
+                msg += "These values should be identical."
+                raise ValueError(msg)
+
+            save_file_name = parameter_dict['save_file_name']
+            with open(f"{save_file_name}_settings.yaml", 'w') as f:
+                yaml_string = yaml.dump({featurizer: 
+                                         {'parameters': parameter_dict['parameters']}
+                                         })
+                f.write(yaml_string)
             
-            X = np.stack(self.df[featurizer].values)
+            fp_arrays = []
+            for f, params in zip(featurizers, parameter_dict['parameters']):
+                if len(featurizers) > 1:
+                    # the features are only calculated once so don't print the same line twice
+                    self.logger.info(f'Calculating {f} features...')
+                self.logger.info(f'Specified settings include\n{params}')
+
+                # reaction mode
+                if self.rxn_mode:
+                    params['featurizer'] = _FP_FEATURIZERS[f]
+                    fps = self.df[self.smiles_column].parallel_apply(get_rxn_fp, **params)
+
+                # molecule mode
+                else:
+                    fps = self.df[self.smiles_column].parallel_apply(_FP_FEATURIZERS[f], **params)
+                
+                fp_array = np.stack(fps.values)
+                self.logger.info(f'Fingerprint array has shape {fp_array.shape}\n')
+                fp_arrays.append(fp_array)
+            
+            X = np.hstack(fp_arrays)
             # ensure the dimensions match before proceeding
             if X.shape[0] != len(y):
                 msg = "Dimension mismatch!\n"
@@ -100,8 +130,7 @@ class BaselineML(object):
 
             for model_type in self.models:
                 self.logger.info("*" * 44)
-                self.logger.info(f"featurizer: {featurizer}")
-                self.logger.info(f"model_type: {model_type}")
+                self.logger.info(f"Training {model_type} model with {featurizer} features")
                 self.logger.info(f"X.shape: {X.shape}")
                 self.logger.info(f"y.shape: {y.shape}")
 
@@ -127,7 +156,7 @@ class BaselineML(object):
                 # NaN value for columns/parameters which do not apply to that algorithm
                 # sort to put best validation performance on top
                 study.trials_dataframe().sort_values(by="value").to_csv(
-                    os.path.join(self.save_dir, f"{model_type}_{featurizer}_optuna_results.csv"), 
+                    os.path.join(self.save_dir, f"{model_type}_{save_file_name}_optuna_results.csv"), 
                     index=False
                 )
                 self.logger.info(study.trials_dataframe().sort_values(by="value"))
@@ -145,14 +174,14 @@ class BaselineML(object):
                     y=y,
                     splits=self.splits,
                 )
-                with open(os.path.join(self.save_dir, f"{model_type}_{featurizer}_scalers.pkl"), "wb") as f:
+                with open(os.path.join(self.save_dir, f"{model_type}_{save_file_name}_scalers.pkl"), "wb") as f:
                     pkl.dump(scalers, f)
 
-                with open(os.path.join(self.save_dir, f"{model_type}_{featurizer}_best_models.pkl"), "wb") as f:
+                with open(os.path.join(self.save_dir, f"{model_type}_{save_file_name}_best_models.pkl"), "wb") as f:
                     pkl.dump(models, f)
 
-                df_summary.to_csv(os.path.join(self.save_dir, f'{model_type}_{featurizer}_summary.csv'), index=False)
-                df_predictions.to_csv(os.path.join(self.save_dir, f'{model_type}_{featurizer}_predictions.csv'), index=False)
+                df_summary.to_csv(os.path.join(self.save_dir, f"{model_type}_{save_file_name}_summary.csv"), index=False)
+                df_predictions.to_csv(os.path.join(self.save_dir, f"{model_type}_{save_file_name}_predictions.csv"), index=False)
 
                 df_tmp = df_summary.query("set == 'test'")
                 self.logger.info('')
