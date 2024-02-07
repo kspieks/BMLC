@@ -4,18 +4,16 @@ For all, the input is a SMILES string and the return is a 1D numpy array of the 
 """
 import numpy as np
 from rdkit import Chem, DataStructs
-from rdkit.Chem.AtomPairs import Sheridan
 from rdkit.Avalon import pyAvalonTools
-from rdkit.Chem import (Descriptors, MACCSkeys, 
+from rdkit.Chem import (Descriptors, MACCSkeys,
                         rdFingerprintGenerator,
-                        rdMolDescriptors,
-                        )
+                        rdMolDescriptors)
+from rdkit.Chem.AtomPairs import Sheridan
 
 try:
     from descriptastorus.descriptors import (CURRENT_VERSION, RDKIT_PROPS,
                                              rdDescriptors,
-                                             rdNormalizedDescriptors,
-                                             )
+                                             rdNormalizedDescriptors)
 except ImportError:
     raise ImportError('Failed to import descriptastorus. Please install descriptastorus via '
                       'pip install git+https://github.com/bp-kelley/descriptastorus '
