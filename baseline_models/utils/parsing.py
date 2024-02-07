@@ -19,10 +19,16 @@ def parse_training_command_line_arguments(command_line_args=None):
     parser.add_argument('--log_name', type=str, default='train',
                         help='Filename for the training log.')
 
+    parser.add_argument('--featurizer_yaml_path', type=str,
+                        help='Path to a yaml file with settings for the featurizer(s). \
+                        Suported featurizers include atompair, avalon, MACCS, morgan, MQN, rdkit, \
+                        rdkit_2d, rdkit_2d_normalized, and topologicaltorsion.')
     
     baseline_configs = parser.add_argument_group('baseline_configs')
     baseline_configs.add_argument('--data_path', type=str,
                         help='Path to the csv file containing SMILES and prediction target for regression.')
+    baseline_configs.add_argument('--smiles_column', type=str, default='smiles',
+                        help='Column in the csv file that contains the SMILES.')
     baseline_configs.add_argument('--target', type=str,
                         help='Name of column to use as regression target.')
     baseline_configs.add_argument('--split_path', type=str,
@@ -30,17 +36,6 @@ def parse_training_command_line_arguments(command_line_args=None):
     baseline_configs.add_argument('--rxn_mode', action='store_true', default=False,
                         help='Boolean indicating whether the smiles column contains reaction SMILES \
                         whose features will be concatenated as r + (p-r).')
-    
-    baseline_configs.add_argument('--featurizers', nargs='+',
-                        # default='morgan',
-                        choices=['atompair_count', 'atompair_bit',
-                                 'morgan_count', 'morgan_bit',
-                                 'rdkit_count', 'rdkit_bit',
-                                 'topologicaltorsion_count', 'topologicaltorsion_bit',
-                                 'avalon_count', 'avalon_bit',
-                                 'rdkit_2d', 'rdkit_2d_normalized',
-                                 'MACCS', 'MQN'],
-                        help='Fingerprint featurizers to use.')
 
     baseline_configs.add_argument('--models', nargs='+',
                         choices=['Lasso', 'LinearSVR', 'SVR', 'MLP',
@@ -96,22 +91,20 @@ def parse_prediction_command_line_arguments(command_line_args=None):
                         help='Directory to store the log file and save predictions.')
     parser.add_argument('--log_name', type=str, default='predict',
                         help='Filename for the prediction log.')
+
+    parser.add_argument('--featurizer_yaml_path', type=str,
+                        help='Path to a yaml file with settings for the featurizer(s). \
+                        Suported featurizers include atompair, avalon, MACCS, morgan, MQN, rdkit, \
+                        rdkit_2d, rdkit_2d_normalized, and topologicaltorsion.')
     
     parser.add_argument('--data_path', type=str,
                         help='Path to the csv file containing SMILES for prediction.')
+    parser.add_argument('--smiles_column', type=str, default='smiles',
+                        help='Column in the csv file that contains the SMILES.')
     parser.add_argument('--rxn_mode', action='store_true', default=False,
                         help='Boolean indicating whether the smiles column contains reaction SMILES \
                         whose features will be concatenated as r + (p-r).')
     
-    parser.add_argument('--featurizer', type=str,
-                        choices=['atompair_count', 'atompair_bit',
-                                 'morgan_count', 'morgan_bit',
-                                 'rdkit_count', 'rdkit_bit',
-                                 'topologicaltorsion_count', 'topologicaltorsion_bit',
-                                 'avalon_count', 'avalon_bit',
-                                 'rdkit_2d', 'rdkit_2d_normalized',
-                                 'MACCS', 'MQN'],
-                        help='Fingerprint featurizer to use.')
     parser.add_argument('--n_cpus_featurize', type=int, default=2,
                         help='Number of CPUs to use in parallel when creating feature vectors.')
     

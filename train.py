@@ -4,9 +4,11 @@
 """
 Baseline ML models for cheminformatics
 """
+import yaml
+
 from baseline_models.main import BaselineML
 from baseline_models.utils.parsing import parse_training_command_line_arguments
-from baseline_models.utils.utils import create_logger
+from baseline_models.utils.utils import create_logger, read_yaml_file
 
 
 def main():
@@ -25,6 +27,13 @@ def main():
     baseline_configs = config_dict['baseline_configs']
     baseline_configs['logger'] = logger
     baseline_configs['save_dir'] = args.save_dir
+
+    # replace filepath with dictionary of featurizer settings
+    baseline_configs['featurizer_settings'] = read_yaml_file(args.featurizer_yaml_path)
+    logger.info('Featurizer settings:')
+    logger.info(yaml.dump(baseline_configs['featurizer_settings'], default_flow_style=False))
+    logger.info('')
+    
     baseline_ML = BaselineML(**baseline_configs)
     baseline_ML.execute()
 
