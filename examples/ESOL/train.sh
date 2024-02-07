@@ -9,8 +9,7 @@ data_path='data/delaney.csv'
 target='logSolubility'
 split_path='splits/delaney_splits_scaffold.pkl'
 
-# use the smaller feature vectors for faster training
-featurizers="Avalon MACCS MQN rdkit_2d_normalized"
+featurizer_yaml_path=featurizer_settings.yaml
 models="LinearSVR RF"
 
 n_cpus_optuna=5
@@ -22,7 +21,7 @@ python $BASELINE_MODELS/train.py \
 --data_path $data_path \
 --target $target \
 --split_path $split_path \
---featurizers $featurizers \
+--featurizer_yaml_path $featurizer_yaml_path \
 --models $models \
 --n_cpus_optuna $n_cpus_optuna \
 --n_trials $n_trials

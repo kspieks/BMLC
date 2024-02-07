@@ -1,0 +1,42 @@
+atompair+donorpair:
+    # "parameters" contains a list of dictionaries with featurizer settings.
+    # the featurizers must be listed in the same order as the key above.
+    parameters: 
+          # atompair featurization settings
+          - {count: True,
+             minDistance: 1,
+             maxDistance: 30,
+             fpSize: 1024,
+             includeChirality: True,
+             }
+
+          # donorpair featurization setings
+          - {fpSize: 1024}
+
+    save_file_name: atompair_donorpair_2048_count
+
+morgan:
+    parameters:
+        # morgan parameters
+        - {count: True,
+           radius: 3,
+           fpSize: 2048,
+           includeChirality: True,
+           }
+    
+    save_file_name: ECFP6_2048_count
+
+MACCS:
+    parameters:
+        - {}
+    save_file_name: MACCS
+
+MQN:
+    parameters:
+        - {}
+    save_file_name: MQN
+
+rdkit_2d_normalized:
+    parameters:
+        - {}
+    save_file_name: rdkit_2d_normalized
