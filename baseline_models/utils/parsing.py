@@ -89,6 +89,11 @@ def parse_prediction_command_line_arguments(command_line_args=None):
                         help='Directory to store the log file and save predictions.')
     parser.add_argument('--log_name', type=str, default='predict',
                         help='Filename for the prediction log.')
+
+    parser.add_argument('--featurizer_yaml_path', type=str,
+                        help='Path to a yaml file with settings for the featurizer(s). \
+                        Suported featurizers include atompair, avalon, MACCS, morgan, MQN, rdkit, \
+                        rdkit_2d, rdkit_2d_normalized, and topologicaltorsion.')
     
     parser.add_argument('--data_path', type=str,
                         help='Path to the csv file containing SMILES for prediction.')
@@ -96,15 +101,6 @@ def parse_prediction_command_line_arguments(command_line_args=None):
                         help='Boolean indicating whether the smiles column contains reaction SMILES \
                         whose features will be concatenated as r + (p-r).')
     
-    parser.add_argument('--featurizer', type=str,
-                        choices=['atompair_count', 'atompair_bit',
-                                 'morgan_count', 'morgan_bit',
-                                 'rdkit_count', 'rdkit_bit',
-                                 'topologicaltorsion_count', 'topologicaltorsion_bit',
-                                 'avalon_count', 'avalon_bit',
-                                 'rdkit_2d', 'rdkit_2d_normalized',
-                                 'MACCS', 'MQN'],
-                        help='Fingerprint featurizer to use.')
     parser.add_argument('--n_cpus_featurize', type=int, default=2,
                         help='Number of CPUs to use in parallel when creating feature vectors.')
     
