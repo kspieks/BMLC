@@ -4,7 +4,7 @@
 """
 Baseline ML models for cheminformatics
 """
-from pprint import pprint
+import yaml
 
 from baseline_models.main import BaselineML
 from baseline_models.utils.parsing import parse_training_command_line_arguments
@@ -31,7 +31,7 @@ def main():
     # replace filepath with dictionary of featurizer settings
     baseline_configs['featurizer_settings'] = read_yaml_file(args.featurizer_yaml_path)
     logger.info('Featurizer settings:')
-    logger.info(pprint(baseline_configs['featurizer_settings']))
+    logger.info(yaml.dump(baseline_configs['featurizer_settings'], default_flow_style=False))
     logger.info('')
     
     baseline_ML = BaselineML(**baseline_configs)

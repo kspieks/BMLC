@@ -7,7 +7,7 @@ Script to make predictions using a pretrained model (or ensemble of trained mode
 
 import os
 import pickle as pkl
-from pprint import pprint
+import yaml
 
 import numpy as np
 import pandas as pd
@@ -34,7 +34,7 @@ def main():
     # replace filepath with dictionary of featurizer settings
     featurizer_settings = read_yaml_file(args.featurizer_yaml_path)
     logger.info('Featurizer settings:')
-    logger.info(pprint(featurizer_settings))
+    logger.info(yaml.dump(featurizer_settings, default_flow_style=False))
     logger.info('')
 
     # read in data
