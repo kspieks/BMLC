@@ -1,13 +1,13 @@
 
-BASELINE_MODELS='../../../BMLC'
+BASELINE_MODELS="../../../BMLC"
 
 save_dir=`pwd`
 echo $save_dir
-log_name='train'
+log_name="train"
 
-data_path='data/delaney.csv'
-target='logSolubility'
-split_path='splits/delaney_splits_scaffold.pkl'
+data_path="data/delaney.csv"
+target="logSolubility"
+split_path="splits/delaney_splits_scaffold.pkl"
 
 featurizer_yaml_path=featurizer_settings.yaml
 models="LinearSVR RF"
