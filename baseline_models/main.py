@@ -103,7 +103,7 @@ class BaselineML(object):
             fp_arrays = []
             for f, params in zip(featurizers, parameter_dict['parameters']):
                 if len(featurizers) > 1:
-                    # the features are only calculated once so don't print the same line twice
+                    # if there are only one set of features to calculate, don't print the same line twice
                     self.logger.info(f'Calculating {f} features...')
                 self.logger.info(f'Specified settings include\n{params}')
 
