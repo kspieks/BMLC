@@ -38,8 +38,15 @@ def register_features_generator(features_generator_name):
 
 
 def rdkit_to_np(vect, num_bits):
-    """Helper function to convert a sparse vector from RDKit to a dense numpy vector."""
-    arr = np.zeros((num_bits,))
+    """
+    Helper function to convert a sparse rdkit.DataStructs.cDataStructs.ExplicitBitVect
+    or rdkit.DataStructs.cDataStructs.UIntSparseIntVect vector to a dense numpy vector.
+    Otherwise, the featurizer generator methods of `GetFingerprintAsNumPy` and
+    `GetCountFingerprintAsNumPy` return numpy arrays of dtype uint32, which leads
+    to overflow errors when these vectors are subtracted to create the reaction
+    representation in `get_rxn_fp`.
+    """
+    arr = np.zeros((num_bits,), dtype=np.float64)
     DataStructs.ConvertToNumpyArray(vect, arr)  # overwrites arr
     return arr
 
@@ -60,10 +67,11 @@ def calc_morgan_fp(smi,
         fpSize=fpSize,
         includeChirality=includeChirality,
     )
+    fp = getattr(morgan_gen,
+                 f'Get{"Count" if count else ""}Fingerprint'
+                 )(mol)
 
-    return getattr(morgan_gen,
-            f'Get{"Count" if count else ""}FingerprintAsNumPy'
-            )(mol)
+    return rdkit_to_np(fp, fpSize)
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetHashedAtomPairFingerprint
@@ -83,10 +91,11 @@ def calc_atompair_fp(smi,
         fpSize=fpSize,
         includeChirality=includeChirality,
     )
-    
-    return getattr(atompair_gen,
-            f'Get{"Count" if count else ""}FingerprintAsNumPy'
-            )(mol)
+    fp = getattr(atompair_gen,
+                 f'Get{"Count" if count else ""}Fingerprint'
+                 )(mol)
+
+    return rdkit_to_np(fp, fpSize)
 
 
 # https://rdkit.org/docs/source/rdkit.Chem.AtomPairs.Sheridan.html
@@ -113,30 +122,32 @@ def calc_rdkit_fp(smi,
         maxPath=maxPath,
         fpSize=fpSize,
     )
+    fp = getattr(rdkit_gen,
+                 f'Get{"Count" if count else ""}Fingerprint'
+                 )(mol)
 
-    return getattr(rdkit_gen,
-            f'Get{"Count" if count else ""}FingerprintAsNumPy'
-            )(mol)
+    return rdkit_to_np(fp, fpSize)
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetTopologicalTorsionGenerator
 @register_features_generator('topologicaltorsion')
-def calc_topologicaltorsion_count_fp(smi,
-                                     count=True,
-                                     torsionAtomCount=4,
-                                     fpSize=2048,
-                                     includeChirality=True,
-                                     ):
+def calc_topologicaltorsion_fp(smi,
+                               count=True,
+                               torsionAtomCount=4,
+                               fpSize=2048,
+                               includeChirality=True,
+                               ):
     mol = Chem.MolFromSmiles(smi)
     toptorsion_gen = rdFingerprintGenerator.GetTopologicalTorsionGenerator(
         fpSize=fpSize,
         torsionAtomCount=torsionAtomCount,
         includeChirality=includeChirality,
     )
+    fp = getattr(toptorsion_gen,
+                 f'Get{"Count" if count else ""}Fingerprint'
+                 )(mol)
 
-    return getattr(toptorsion_gen,
-            f'Get{"Count" if count else ""}FingerprintAsNumPy'
-            )(mol)
+    return rdkit_to_np(fp, fpSize)
 
 
 # https://www.rdkit.org/docs/source/rdkit.Avalon.pyAvalonTools.html
@@ -148,8 +159,6 @@ def calc_avalon_fp(smi, nBits=512, count=True):
                  f'GetAvalon{"Count" if count else ""}FP'
                  )(mol)
 
-    # convert rdkit.DataStructs.cDataStructs.UIntSparseIntVect if count = True
-    # or rdkit.DataStructs.cDataStructs.ExplicitBitVect if count = False to np.array
     return rdkit_to_np(fp, nBits)
 
 
@@ -157,11 +166,15 @@ def calc_avalon_fp(smi, nBits=512, count=True):
 # http://rdkit.org/docs/source/rdkit.Chem.MACCSkeys.html
 @register_features_generator('MACCS')
 def calc_MACCS_fp(smi):
+    """ 
+    RDKit preserves the MACCS key numbers, so that MACCS key 23 (for example) is bit number 23. 
+    Bit 0 is always unset and may be ignored. Only bits 1-166 will be set.
+    https://github.com/rdkit/rdkit/issues/1726
+    """
     mol = Chem.MolFromSmiles(smi)
-    # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
     fp = MACCSkeys.GenMACCSKeys(mol)
-
-    return np.array(fp)
+    # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
+    return rdkit_to_np(fp, 167)[1:]
 
 
 @register_features_generator('MQN')
@@ -175,10 +188,10 @@ def calc_MQN_fp(smi):
     (4) Topology counts
     """
     mol = Chem.MolFromSmiles(smi)
-    # features are returned as a list
+    # features are returned as a list. Convert them to a numpy array.
     fp = rdMolDescriptors.MQNs_(mol)
 
-    return np.array(fp)
+    return np.array(fp, dtype=np.float64)
 
 
 # https://github.com/bp-kelley/descriptastorus/blob/master/descriptastorus/descriptors/rdDescriptors.py#L287
@@ -197,9 +210,10 @@ def calc_rdkit_2d_fp(smi, properties=RDKIT_PROPS[CURRENT_VERSION]):
     Just clone the repo and then run python setup.py install within the env 
     """
     generator = rdDescriptors.RDKit2D(properties=properties)
+    # features are returned as a list. Convert them to a numpy array.
     fp = generator.process(smi)[1:]
 
-    return np.array(fp)
+    return np.array(fp, dtype=np.float64)
 
 
 @register_features_generator('rdkit_2d_normalized')
@@ -210,9 +224,10 @@ def calc_rdkit_2d_normalized_fp(smi, properties=RDKIT_PROPS[CURRENT_VERSION]):
     but this can be changed by modifying which properties are calculated.
     """
     generator = rdNormalizedDescriptors.RDKit2DNormalized(properties=properties)
+    # features are returned as a list. Convert them to a numpy array.
     fp = generator.process(smi)[1:]
 
-    return np.array(fp)
+    return np.array(fp, dtype=np.float64)
 
 
 def get_rxn_fp(rxn_smi, featurizer, **params):
