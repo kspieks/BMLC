@@ -27,6 +27,8 @@ def parse_training_command_line_arguments(command_line_args=None):
     baseline_configs = parser.add_argument_group('baseline_configs')
     baseline_configs.add_argument('--data_path', type=str,
                         help='Path to the csv file containing SMILES and prediction target for regression.')
+    baseline_configs.add_argument('--smiles_column', type=str, default='smiles',
+                        help='Column in the csv file that contains the SMILES.')
     baseline_configs.add_argument('--target', type=str,
                         help='Name of column to use as regression target.')
     baseline_configs.add_argument('--split_path', type=str,
@@ -97,6 +99,8 @@ def parse_prediction_command_line_arguments(command_line_args=None):
     
     parser.add_argument('--data_path', type=str,
                         help='Path to the csv file containing SMILES for prediction.')
+    parser.add_argument('--smiles_column', type=str, default='smiles',
+                        help='Column in the csv file that contains the SMILES.')
     parser.add_argument('--rxn_mode', action='store_true', default=False,
                         help='Boolean indicating whether the smiles column contains reaction SMILES \
                         whose features will be concatenated as r + (p-r).')
