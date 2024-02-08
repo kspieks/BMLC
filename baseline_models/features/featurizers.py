@@ -35,29 +35,6 @@ def register_features_generator(features_generator_name):
     return decorator
 
 
-# https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetHashedMorganFingerprint
-# https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetMorganGenerator
-@register_features_generator('morgan')
-def calc_morgan_fp(smi,
-                   count=True,
-                   radius=2,
-                   fpSize=2048,
-                   includeChirality=True,
-                   ):
-    "Extended Connectivity Fingerprint (MorganFingerprint from RDKit)"
-    mol = Chem.MolFromSmiles(smi)
-    morgan_gen = rdFingerprintGenerator.GetMorganGenerator(
-        radius=radius,
-        fpSize=fpSize,
-        includeChirality=includeChirality,
-    )
-    fp = getattr(morgan_gen,
-                 f'Get{"Count" if count else ""}Fingerprint'
-                 )(mol)
-
-    return rdkit_to_np(fp, fpSize)
-
-
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetHashedAtomPairFingerprint
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetAtomPairGenerator
 @register_features_generator('atompair')
@@ -93,6 +70,18 @@ def calc_atompair_fp(smi,
     return rdkit_to_np(fp, fpSize)
 
 
+# https://www.rdkit.org/docs/source/rdkit.Avalon.pyAvalonTools.html
+@register_features_generator('avalon')
+def calc_avalon_fp(smi, nBits=512, count=True):
+    mol = Chem.MolFromSmiles(smi)
+
+    fp = getattr(pyAvalonTools,
+                 f'GetAvalon{"Count" if count else ""}FP'
+                 )(mol)
+
+    return rdkit_to_np(fp, nBits)
+
+
 # https://rdkit.org/docs/source/rdkit.Chem.AtomPairs.Sheridan.html
 @register_features_generator('donorpair')
 def get_donorpair_fp(smi, fpSize=1024):
@@ -101,6 +90,71 @@ def get_donorpair_fp(smi, fpSize=1024):
     nze = sparse_vec.GetNonzeroElements()
 
     return _hash_fold(nze, fpSize)
+
+
+# https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetMACCSKeysFingerprint
+# http://rdkit.org/docs/source/rdkit.Chem.MACCSkeys.html
+@register_features_generator('MACCS')
+def calc_MACCS_fp(smi):
+    """ 
+    MACCS Keys have no hyperparameters to vary.
+    RDKit preserves the MACCS key numbers, so that MACCS key 23 (for example) is bit number 23. 
+    Bit 0 is always unset and may be ignored. Only bits 1-166 will be set.
+    https://github.com/rdkit/rdkit/issues/1726
+
+    Source code: https://github.com/rdkit/rdkit-orig/blob/master/rdkit/Chem/MACCSkeys.py
+
+    Note that `MACCSkeys.GenMACCSKey` is identical to `rdMolDescriptors.GetMACCSKeysFingerprint`
+    https://github.com/rdkit/rdkit/blob/master/rdkit/Chem/MACCSkeys.py#L299
+    """
+    mol = Chem.MolFromSmiles(smi)
+    fp = MACCSkeys.GenMACCSKeys(mol)
+    # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
+    return rdkit_to_np(fp, 167)[1:]     # ignore bit 0
+
+
+# https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetHashedMorganFingerprint
+# https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetMorganGenerator
+@register_features_generator('morgan')
+def calc_morgan_fp(smi,
+                   count=True,
+                   radius=2,
+                   fpSize=2048,
+                   includeChirality=True,
+                   ):
+    "Extended Connectivity Fingerprint (MorganFingerprint from RDKit)"
+    mol = Chem.MolFromSmiles(smi)
+    morgan_gen = rdFingerprintGenerator.GetMorganGenerator(
+        radius=radius,
+        fpSize=fpSize,
+        includeChirality=includeChirality,
+    )
+    fp = getattr(morgan_gen,
+                 f'Get{"Count" if count else ""}Fingerprint'
+                 )(mol)
+
+    return rdkit_to_np(fp, fpSize)
+
+
+@register_features_generator('MQN')
+def calc_MQN_fp(smi):
+    """
+    Molecular Quantun Numbers (MQN) Descriptors.
+    Consists of 4 categories, but only 42 features total:
+    (1) Atom counts
+    (2) Bond counts
+    (3) Polarity counts
+    (4) Topology counts
+
+    Source code: https://github.com/rdkit/rdkit/blob/master/Code/GraphMol/Descriptors/MQN.cpp
+    Publication: Nguyen et al. "Classification of organic molecules by molecular quantum numbers."
+                 ChemMedChem 4:1803-5 (2009).
+    """
+    mol = Chem.MolFromSmiles(smi)
+    # features are returned as a list. Convert them to a numpy array.
+    fp = rdMolDescriptors.MQNs_(mol)
+
+    return np.array(fp, dtype=np.float64)
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdFingerprintGenerator.html#rdkit.Chem.rdFingerprintGenerator.GetRDKitFPGenerator
@@ -154,60 +208,6 @@ def calc_topologicaltorsion_fp(smi,
                  )(mol)
 
     return rdkit_to_np(fp, fpSize)
-
-
-# https://www.rdkit.org/docs/source/rdkit.Avalon.pyAvalonTools.html
-@register_features_generator('avalon')
-def calc_avalon_fp(smi, nBits=512, count=True):
-    mol = Chem.MolFromSmiles(smi)
-
-    fp = getattr(pyAvalonTools,
-                 f'GetAvalon{"Count" if count else ""}FP'
-                 )(mol)
-
-    return rdkit_to_np(fp, nBits)
-
-
-# https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetMACCSKeysFingerprint
-# http://rdkit.org/docs/source/rdkit.Chem.MACCSkeys.html
-@register_features_generator('MACCS')
-def calc_MACCS_fp(smi):
-    """ 
-    MACCS Keys have no hyperparameters to vary.
-    RDKit preserves the MACCS key numbers, so that MACCS key 23 (for example) is bit number 23. 
-    Bit 0 is always unset and may be ignored. Only bits 1-166 will be set.
-    https://github.com/rdkit/rdkit/issues/1726
-
-    Source code: https://github.com/rdkit/rdkit-orig/blob/master/rdkit/Chem/MACCSkeys.py
-
-    Note that `MACCSkeys.GenMACCSKey` is identical to `rdMolDescriptors.GetMACCSKeysFingerprint`
-    https://github.com/rdkit/rdkit/blob/master/rdkit/Chem/MACCSkeys.py#L299
-    """
-    mol = Chem.MolFromSmiles(smi)
-    fp = MACCSkeys.GenMACCSKeys(mol)
-    # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
-    return rdkit_to_np(fp, 167)[1:]     # ignore bit 0
-
-
-@register_features_generator('MQN')
-def calc_MQN_fp(smi):
-    """
-    Molecular Quantun Numbers (MQN) Descriptors.
-    Consists of 4 categories, but only 42 features total:
-    (1) Atom counts
-    (2) Bond counts
-    (3) Polarity counts
-    (4) Topology counts
-
-    Source code: https://github.com/rdkit/rdkit/blob/master/Code/GraphMol/Descriptors/MQN.cpp
-    Publication: Nguyen et al. "Classification of organic molecules by molecular quantum numbers."
-                 ChemMedChem 4:1803-5 (2009).
-    """
-    mol = Chem.MolFromSmiles(smi)
-    # features are returned as a list. Convert them to a numpy array.
-    fp = rdMolDescriptors.MQNs_(mol)
-
-    return np.array(fp, dtype=np.float64)
 
 
 # https://github.com/bp-kelley/descriptastorus/blob/master/descriptastorus/descriptors/rdDescriptors.py#L287
