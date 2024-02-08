@@ -190,6 +190,10 @@ def calc_MQN_fp(smi):
     (2) Bond counts
     (3) Polarity counts
     (4) Topology counts
+
+    Source code: https://github.com/rdkit/rdkit/blob/master/Code/GraphMol/Descriptors/MQN.cpp
+    Publication: Nguyen et al. "Classification of organic molecules by molecular quantum numbers."
+                 ChemMedChem 4:1803-5 (2009).
     """
     mol = Chem.MolFromSmiles(smi)
     # features are returned as a list. Convert them to a numpy array.
