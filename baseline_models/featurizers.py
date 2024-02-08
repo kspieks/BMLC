@@ -146,6 +146,17 @@ def calc_topologicaltorsion_fp(smi,
                                fpSize=2048,
                                includeChirality=True,
                                ):
+    """
+    Topological torsion fingerprints aim to complement the predominantly long-range
+    relationships captured in atom pair fingerprints by representing short-range information
+    contained in the torsion angles of a molecule. They use the same atom type definitions as
+    atom pair fingerprints, but only count four consecutively bonded non-hydrogen atoms along
+    with the number of non-hydrogen branches.
+    https://www.blopig.com/blog/2022/06/exploring-topological-fingerprints-in-rdkit/
+
+    Publication: Nilakantan, R. et al. "Topological torsion: a new molecular descriptor for SAR applications.
+    Comparison with other descriptors" J. Chem. Inf. Comput. Sci. 27, 2, 82-85 (1987).
+    """
     mol = Chem.MolFromSmiles(smi)
     toptorsion_gen = rdFingerprintGenerator.GetTopologicalTorsionGenerator(
         fpSize=fpSize,
