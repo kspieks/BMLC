@@ -6,8 +6,8 @@ channels:
 dependencies:
   - numpy
   - pandas
-  - python
-  - rdkit
+  - python=3.11.7
+  - rdkit=2023.9.4
   - scikit-learn
   - scipy
   - seaborn
