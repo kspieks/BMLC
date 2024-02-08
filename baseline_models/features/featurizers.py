@@ -1,6 +1,6 @@
 """
 A collection of functions that featurize an individual molecule via RDKit.
-For all, the input is a SMILES string and the return is a 1D numpy array of the featurization.
+For each function, the input is a SMILES string, and the return is a 1D numpy array.
 """
 import numpy as np
 from rdkit import Chem, DataStructs
@@ -19,7 +19,7 @@ except ImportError:
                       'pip install git+https://github.com/bp-kelley/descriptastorus '
                       'to use RDKit 2D features.')
 
-from .utils.hashing_utils import _hash_fold
+from .utils import rdkit_to_np, _hash_fold
 
 _FP_FEATURIZERS = {}
 
@@ -33,20 +33,6 @@ def register_features_generator(features_generator_name):
         return features_generator
 
     return decorator
-
-
-def rdkit_to_np(vect, num_bits):
-    """
-    Helper function to convert a sparse rdkit.DataStructs.cDataStructs.ExplicitBitVect
-    or rdkit.DataStructs.cDataStructs.UIntSparseIntVect vector to a dense numpy vector.
-    Otherwise, the featurizer generator methods of `GetFingerprintAsNumPy` and
-    `GetCountFingerprintAsNumPy` return numpy arrays of dtype uint32, which leads
-    to overflow errors when these vectors are subtracted to create the reaction
-    representation in `get_rxn_fp`.
-    """
-    arr = np.zeros((num_bits,), dtype=np.float64)
-    DataStructs.ConvertToNumpyArray(vect, arr)  # overwrites arr
-    return arr
 
 
 # https://www.rdkit.org/docs/source/rdkit.Chem.rdMolDescriptors.html#rdkit.Chem.rdMolDescriptors.GetHashedMorganFingerprint
@@ -259,16 +245,3 @@ def calc_rdkit_2d_normalized_fp(smi, properties=RDKIT_PROPS[CURRENT_VERSION]):
 
     return np.array(fp, dtype=np.float64)
 
-
-def get_rxn_fp(rxn_smi, featurizer, **params):
-    """
-    Helper function that creates a fingerprint for a reaction.
-
-    Featurizer is one of the functions from above, which accepts a
-    SMILES string as input and then return a fingerprint vector.
-    """
-    rsmi, psmi = rxn_smi.split('>>')
-    fp_r = featurizer(rsmi, **params)
-    fp_p = featurizer(psmi, **params)
-    
-    return np.concatenate((fp_r, fp_p - fp_r))

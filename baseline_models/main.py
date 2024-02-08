@@ -9,7 +9,8 @@ import pandas as pd
 from pandarallel import pandarallel
 import yaml
 
-from .featurizers import _FP_FEATURIZERS, get_rxn_fp
+from .features.featurizers import _FP_FEATURIZERS
+from .features.utils import get_rxn_fp
 from .training import Objective, callback, naive_baseline, train_model
 
 

@@ -13,7 +13,8 @@ import numpy as np
 import pandas as pd
 from pandarallel import pandarallel
 
-from baseline_models.featurizers import _FP_FEATURIZERS, get_rxn_fp
+from baseline_models.features.featurizers import _FP_FEATURIZERS
+from baseline_models.features.utils import get_rxn_fp
 from baseline_models.utils.parsing import parse_prediction_command_line_arguments
 from baseline_models.utils.utils import create_logger, read_yaml_file
 
