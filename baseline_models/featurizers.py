@@ -165,14 +165,20 @@ def calc_avalon_fp(smi, nBits=512, count=True):
 @register_features_generator('MACCS')
 def calc_MACCS_fp(smi):
     """ 
+    MACCS Keys have no hyperparameters to vary.
     RDKit preserves the MACCS key numbers, so that MACCS key 23 (for example) is bit number 23. 
     Bit 0 is always unset and may be ignored. Only bits 1-166 will be set.
     https://github.com/rdkit/rdkit/issues/1726
+
+    Source code: https://github.com/rdkit/rdkit-orig/blob/master/rdkit/Chem/MACCSkeys.py
+
+    Note that `MACCSkeys.GenMACCSKey` is identical to `rdMolDescriptors.GetMACCSKeysFingerprint`
+    https://github.com/rdkit/rdkit/blob/master/rdkit/Chem/MACCSkeys.py#L299
     """
     mol = Chem.MolFromSmiles(smi)
     fp = MACCSkeys.GenMACCSKeys(mol)
     # convert rdkit.DataStructs.cDataStructs.ExplicitBitVect to np.array
-    return rdkit_to_np(fp, 167)[1:]
+    return rdkit_to_np(fp, 167)[1:]     # ignore bit 0
 
 
 @register_features_generator('MQN')
