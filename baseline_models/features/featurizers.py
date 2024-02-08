@@ -11,15 +11,14 @@ from rdkit.Chem import (Descriptors, MACCSkeys,
 from rdkit.Chem.AtomPairs import Sheridan
 
 try:
-    from descriptastorus.descriptors import (CURRENT_VERSION, RDKIT_PROPS,
-                                             rdDescriptors,
-                                             rdNormalizedDescriptors)
+    from descriptastorus.descriptors import rdDescriptors, rdNormalizedDescriptors
 except ImportError:
     raise ImportError('Failed to import descriptastorus. Please install descriptastorus via '
                       'pip install git+https://github.com/bp-kelley/descriptastorus '
                       'to use RDKit 2D features.')
 
 from .utils import rdkit_to_np, _hash_fold
+from rdkit_2d_features_list import CURRENT_VERSION, RDKIT_PROPS
 
 _FP_FEATURIZERS = {}
 
