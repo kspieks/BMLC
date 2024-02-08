@@ -82,6 +82,17 @@ def calc_atompair_fp(smi,
                      fpSize=2048,
                      includeChirality=True,
                      ):
+    """
+    Publication: Carhart, R.E. et al. "Atom Pairs as Molecular Features in 
+    Structure-Activity Studies: Definition and Applications” J. Chem. Inf. Comp. Sci. 25:64-73 (1985).
+
+    "An atom pair substructure is defined as a triplet of two non-hydrogen atoms and their shortest
+    path distance in the molecular graph, i.e. (atom type 1, atom type 2, geodesic distance).
+    In the standard RDKit implementation, distinct atom types are defined by tuples of atomic number, 
+    number of heavy atom neighbours, aromaticity and chirality. All unique triplets in a molecule
+    are enumerated and stored in sparse count or bit vector format."
+    https://www.blopig.com/blog/2022/06/exploring-topological-fingerprints-in-rdkit/
+    """
     mol = Chem.MolFromSmiles(smi)
     atompair_gen = rdFingerprintGenerator.GetAtomPairGenerator(
         minDistance=minDistance,
