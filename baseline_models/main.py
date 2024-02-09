@@ -61,10 +61,7 @@ class BaselineML(object):
         with open(self.split_path, "rb") as f:
             self.splits = pkl.load(f)
 
-    def execute(self):
-        # assign regression target y
-        y = self.df[self.target].values
-
+    def train_naive_baseline(self):
         # use naive baseline model that predicts the mean value from the training set for all test molecules
         self.logger.info("*" * 88)
         self.logger.info("Naive baseline: mean predictor")
@@ -79,6 +76,13 @@ class BaselineML(object):
                             f"{df_tmp.RMSE.std():.4f}")
         self.logger.info(f"Test R2 (mean +- 1 std): {df_tmp.R2.mean():.4f} +- "
                             f"{df_tmp.R2.std():.4f}")
+
+    def execute(self):
+        # assign regression target y
+        y = self.df[self.target].values
+
+        # train the naive baseline model
+        self.train_naive_baseline()
 
         # calculate input features X (i.e., fingerprint vectors) in parallel
         pandarallel.initialize(nb_workers=self.n_cpus_featurize, progress_bar=True)
