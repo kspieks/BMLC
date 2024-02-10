@@ -6,11 +6,9 @@ import numpy as np
 import optuna
 from optuna.samplers import TPESampler
 import pandas as pd
-from pandarallel import pandarallel
 import yaml
 
-from .features.featurizers import _FP_FEATURIZERS
-from .features.utils import get_rxn_fp
+from .features.create_features import create_features
 from .training import Objective, callback, naive_baseline, train_model
 
 
@@ -61,7 +59,7 @@ class BaselineML(object):
         with open(self.split_path, "rb") as f:
             self.splits = pkl.load(f)
 
-    def train_naive_baseline(self):
+    def train_naive_baseline(self, y):
         # use naive baseline model that predicts the mean value from the training set for all test molecules
         self.logger.info("*" * 88)
         self.logger.info("Naive baseline: mean predictor")
@@ -82,56 +80,37 @@ class BaselineML(object):
         y = self.df[self.target].values
 
         # train the naive baseline model
-        self.train_naive_baseline()
+        self.train_naive_baseline(y)
 
-        # calculate input features X (i.e., fingerprint vectors) in parallel
-        pandarallel.initialize(nb_workers=self.n_cpus_featurize, progress_bar=True)
+        # calculate input features X (i.e., fingerprint vectors)
         for featurizer, parameter_dict in self.featurizer_settings.items():
             self.logger.info("*" * 88)
             self.logger.info(f"Calculating {featurizer} features...")
+            self.logger.info(f"Specified settings include\n{parameter_dict['parameters']}")
 
-            featurizers = featurizer.split('+')
-            if len(featurizers) != len(parameter_dict['parameters']):
+            X = create_features(df=self.df,
+                                smiles_column=self.smiles_column,
+                                rxn_mode=self.rxn_mode,
+                                featurizer=featurizer,
+                                parameters=parameter_dict['parameters'],
+                                n_cpus=self.n_cpus_featurize
+                                )
+            
+            # ensure the dimensions match before proceeding
+            self.logger.info(f'X.shape is: {X.shape}')
+            if X.shape[0] != len(y):
                 msg = "Dimension mismatch!\n"
-                msg += f"There are {len(featurizers)} featurizers specified and "
-                msg += f"{len(parameter_dict['parameters'])} parameter dictionaries specified in the input json file.\n"
-                msg += "These values should be identical."
+                msg += f"There are {X.shape[0]} SMILES and {len(y)} target values.\n"
+                msg += "These values should be identical..."
                 raise ValueError(msg)
-
+            
+            # save the featurization settings to be used during prediction
             save_file_name = parameter_dict['save_file_name']
             with open(f"{save_file_name}_settings.yaml", 'w') as f:
                 yaml_string = yaml.dump({featurizer: 
                                          {'parameters': parameter_dict['parameters']}
                                          })
                 f.write(yaml_string)
-            
-            fp_arrays = []
-            for f, params in zip(featurizers, parameter_dict['parameters']):
-                if len(featurizers) > 1:
-                    # if there are only one set of features to calculate, don't print the same line twice
-                    self.logger.info(f'Calculating {f} features...')
-                self.logger.info(f'Specified settings include\n{params}')
-
-                # reaction mode
-                if self.rxn_mode:
-                    params['featurizer'] = _FP_FEATURIZERS[f]
-                    fps = self.df[self.smiles_column].parallel_apply(get_rxn_fp, **params)
-
-                # molecule mode
-                else:
-                    fps = self.df[self.smiles_column].parallel_apply(_FP_FEATURIZERS[f], **params)
-                
-                fp_array = np.stack(fps.values)
-                self.logger.info(f'Fingerprint array has shape {fp_array.shape}\n')
-                fp_arrays.append(fp_array)
-            
-            X = np.hstack(fp_arrays)
-            # ensure the dimensions match before proceeding
-            if X.shape[0] != len(y):
-                msg = "Dimension mismatch!\n"
-                msg += f"There are {X.shape[0]} SMILES and {len(y)} target values.\n"
-                msg += "These values should be identical..."
-                raise ValueError(msg)
 
             for model_type in self.models:
                 self.logger.info("*" * 44)

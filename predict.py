@@ -7,14 +7,12 @@ Script to make predictions using a pretrained model (or ensemble of trained mode
 
 import os
 import pickle as pkl
-import yaml
 
 import numpy as np
 import pandas as pd
-from pandarallel import pandarallel
+import yaml
 
-from baseline_models.features.featurizers import _FP_FEATURIZERS
-from baseline_models.features.utils import get_rxn_fp
+from baseline_models.features.create_features import create_features
 from baseline_models.utils.parsing import parse_prediction_command_line_arguments
 from baseline_models.utils.utils import create_logger, read_yaml_file
 
@@ -42,42 +40,20 @@ def main():
     df = pd.read_csv(args.data_path)
     logger.info(f'{args.data_path} has {len(df):,} rows')
 
-    # generate features in parallel
-    pandarallel.initialize(nb_workers=args.n_cpus_featurize, progress_bar=True)
-    fp_arrays = []
-    for featurizer, parameter_dict in featurizer_settings.items():
+    # generate features
+    for featurizer, parameter_dict in featurizer_settings.items(): 
         params = parameter_dict['parameters']
         logger.info(f'Calculating {featurizer} features...')
+        logger.info(f"Specified settings include\n{params}")
 
-        featurizers = featurizer.split('+')
-        if len(featurizers) != len(parameter_dict['parameters']):
-            msg = "Dimension mismatch!\n"
-            msg += f"There are {len(featurizers)} featurizers specified and "
-            msg += f"{len(parameter_dict['parameters'])} parameter dictionaries specified in the input json file.\n"
-            msg += "These values should be identical."
-            raise ValueError(msg)
-
-        fp_arrays = []
-        for f, params in zip(featurizers, parameter_dict['parameters']):
-            if len(featurizers) > 1:
-                # if there are only one set of features to calculate, don't print the same line twice
-                logger.info(f'Calculating {f} features...')
-            logger.info(f'Specified settings include\n{params}')
-
-            # reaction mode
-            if args.rxn_mode:
-                params['featurizer'] = _FP_FEATURIZERS[f]
-                fps = df[args.smiles_column].parallel_apply(get_rxn_fp, **params)
-
-            # molecule mode
-            else:
-                fps = df[args.smiles_column].parallel_apply(_FP_FEATURIZERS[f], **params)
-        
-            fp_array = np.stack(fps.values)
-            logger.info(f'Fingerprint array has shape {fp_array.shape}\n')
-            fp_arrays.append(fp_array)
-
-    X = np.hstack(fp_arrays)
+        X = create_features(df=df,
+                            smiles_column=args.smiles_column,
+                            rxn_mode=args.rxn_mode,
+                            featurizer=featurizer,
+                            parameters=params,
+                            n_cpus=args.n_cpus_featurize,
+                            )
+    
     logger.info(f'X.shape: {X.shape}')
 
     # load models and scalers
