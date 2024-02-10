@@ -79,6 +79,14 @@ class BaselineML(object):
             self.logger.info(f"Calculating {featurizer} features...")
             self.logger.info(f"Specified settings include\n{parameter_dict['parameters']}")
 
+            # save the featurization settings to be used during prediction
+            save_file_name = parameter_dict['save_file_name']
+            with open(os.path.join(self.save_dir, f"{save_file_name}_settings.yaml"), 'w') as f:
+                yaml_string = yaml.dump({featurizer: 
+                                         {'parameters': parameter_dict['parameters']}
+                                         })
+                f.write(yaml_string)
+
             X = create_features(df=self.df,
                                 smiles_column=self.smiles_column,
                                 rxn_mode=self.rxn_mode,
@@ -94,14 +102,6 @@ class BaselineML(object):
                 msg += f"There are {X.shape[0]} SMILES and {len(y)} target values.\n"
                 msg += "These values should be identical..."
                 raise ValueError(msg)
-            
-            # save the featurization settings to be used during prediction
-            save_file_name = parameter_dict['save_file_name']
-            with open(f"{save_file_name}_settings.yaml", 'w') as f:
-                yaml_string = yaml.dump({featurizer: 
-                                         {'parameters': parameter_dict['parameters']}
-                                         })
-                f.write(yaml_string)
 
             for model_type in self.models:
                 self.logger.info("*" * 44)
