@@ -1,31 +1,54 @@
-number,value,datetime_start,datetime_complete,duration,params_max_depth,params_n_estimators,user_attrs_best_model,state
-6,0.8689048365492555,2024-01-17 11:37:03.601688,2024-01-17 11:37:33.176677,0 days 00:00:29.574989,14,250,"RandomForestRegressor(max_depth=14, n_estimators=250, random_state=42)",COMPLETE
-14,0.8697562963840054,2024-01-17 11:37:32.621431,2024-01-17 11:38:03.000392,0 days 00:00:30.378961,15,250,"RandomForestRegressor(max_depth=15, n_estimators=250, random_state=42)",COMPLETE
-18,0.8697562963840054,2024-01-17 11:37:56.384514,2024-01-17 11:38:26.026523,0 days 00:00:29.642009,15,250,"RandomForestRegressor(max_depth=15, n_estimators=250, random_state=42)",COMPLETE
-15,0.8697562963840054,2024-01-17 11:37:33.257362,2024-01-17 11:38:03.845023,0 days 00:00:30.587661,15,250,"RandomForestRegressor(max_depth=15, n_estimators=250, random_state=42)",COMPLETE
-19,0.8702888655993801,2024-01-17 11:38:01.904147,2024-01-17 11:38:37.714621,0 days 00:00:35.810474,15,300,"RandomForestRegressor(max_depth=15, n_estimators=300, random_state=42)",COMPLETE
-9,0.8708303952518486,2024-01-17 11:37:08.640342,2024-01-17 11:37:32.195762,0 days 00:00:23.555420,14,200,"RandomForestRegressor(max_depth=14, n_estimators=200, random_state=42)",COMPLETE
-17,0.8715766584510953,2024-01-17 11:37:37.032614,2024-01-17 11:38:04.171872,0 days 00:00:27.139258,15,225,"RandomForestRegressor(max_depth=15, n_estimators=225, random_state=42)",COMPLETE
-16,0.8715766584510953,2024-01-17 11:37:34.882882,2024-01-17 11:38:01.852065,0 days 00:00:26.969183,15,225,"RandomForestRegressor(max_depth=15, n_estimators=225, random_state=42)",COMPLETE
-20,0.8721750918451068,2024-01-17 11:38:03.053919,2024-01-17 11:38:32.447865,0 days 00:00:29.393946,13,250,"RandomForestRegressor(max_depth=13, n_estimators=250, random_state=42)",COMPLETE
-25,0.8724021708702111,2024-01-17 11:38:37.783605,2024-01-17 11:39:12.662548,0 days 00:00:34.878943,13,300,"RandomForestRegressor(max_depth=13, n_estimators=300, random_state=42)",COMPLETE
-23,0.8724021708702111,2024-01-17 11:38:26.076526,2024-01-17 11:39:00.964777,0 days 00:00:34.888251,13,300,"RandomForestRegressor(max_depth=13, n_estimators=300, random_state=42)",COMPLETE
-22,0.8724021708702111,2024-01-17 11:38:04.221524,2024-01-17 11:38:39.748202,0 days 00:00:35.526678,13,300,"RandomForestRegressor(max_depth=13, n_estimators=300, random_state=42)",COMPLETE
-21,0.8724021708702111,2024-01-17 11:38:03.898194,2024-01-17 11:38:38.864130,0 days 00:00:34.965936,13,300,"RandomForestRegressor(max_depth=13, n_estimators=300, random_state=42)",COMPLETE
-27,0.8725323223945598,2024-01-17 11:38:39.804979,2024-01-17 11:39:07.789555,0 days 00:00:27.984576,12,250,"RandomForestRegressor(max_depth=12, n_estimators=250, random_state=42)",COMPLETE
-26,0.8725323223945598,2024-01-17 11:38:38.918562,2024-01-17 11:39:07.149241,0 days 00:00:28.230679,12,250,"RandomForestRegressor(max_depth=12, n_estimators=250, random_state=42)",COMPLETE
-29,0.8725323223945598,2024-01-17 11:39:01.020580,2024-01-17 11:39:28.351290,0 days 00:00:27.330710,12,250,"RandomForestRegressor(max_depth=12, n_estimators=250, random_state=42)",COMPLETE
-28,0.8725323223945598,2024-01-17 11:39:00.201757,2024-01-17 11:39:27.519110,0 days 00:00:27.317353,12,250,"RandomForestRegressor(max_depth=12, n_estimators=250, random_state=42)",COMPLETE
-12,0.8731878589159667,2024-01-17 11:37:29.318947,2024-01-17 11:37:56.327102,0 days 00:00:27.008155,13,225,"RandomForestRegressor(max_depth=13, n_estimators=225, random_state=42)",COMPLETE
-10,0.8738600193147088,2024-01-17 11:37:13.612183,2024-01-17 11:37:32.578588,0 days 00:00:18.966405,11,175,"RandomForestRegressor(max_depth=11, n_estimators=175, random_state=42)",COMPLETE
-8,0.8741011094053006,2024-01-17 11:37:06.238626,2024-01-17 11:37:34.829063,0 days 00:00:28.590437,10,275,"RandomForestRegressor(max_depth=10, n_estimators=275, random_state=42)",COMPLETE
-24,0.8757509060540801,2024-01-17 11:38:32.500405,2024-01-17 11:39:00.152669,0 days 00:00:27.652264,8,300,"RandomForestRegressor(max_depth=8, n_estimators=300, random_state=42)",COMPLETE
-3,0.8764282282819365,2024-01-17 11:36:54.279456,2024-01-17 11:37:15.661019,0 days 00:00:21.381563,10,200,"RandomForestRegressor(max_depth=10, n_estimators=200, random_state=42)",COMPLETE
-11,0.8857390150644248,2024-01-17 11:37:15.698814,2024-01-17 11:37:29.286468,0 days 00:00:13.587654,11,125,"RandomForestRegressor(max_depth=11, n_estimators=125, random_state=42)",COMPLETE
-2,0.8910414438166743,2024-01-17 11:36:54.279017,2024-01-17 11:37:05.482155,0 days 00:00:11.203138,6,150,"RandomForestRegressor(max_depth=6, n_estimators=150, random_state=42)",COMPLETE
-7,0.8921908985938986,2024-01-17 11:37:05.502288,2024-01-17 11:37:13.596726,0 days 00:00:08.094438,7,100,"RandomForestRegressor(max_depth=7, random_state=42)",COMPLETE
-13,0.917362037915099,2024-01-17 11:37:32.246637,2024-01-17 11:37:36.992975,0 days 00:00:04.746338,5,75,"RandomForestRegressor(max_depth=5, n_estimators=75, random_state=42)",COMPLETE
-4,0.917362037915099,2024-01-17 11:36:54.311214,2024-01-17 11:36:59.042465,0 days 00:00:04.731251,5,75,"RandomForestRegressor(max_depth=5, n_estimators=75, random_state=42)",COMPLETE
-1,0.9246725765398167,2024-01-17 11:36:54.278186,2024-01-17 11:37:08.616859,0 days 00:00:14.338673,4,275,"RandomForestRegressor(max_depth=4, n_estimators=275, random_state=42)",COMPLETE
-0,0.9272251787613908,2024-01-17 11:36:54.277520,2024-01-17 11:37:03.586147,0 days 00:00:09.308627,4,175,"RandomForestRegressor(max_depth=4, n_estimators=175, random_state=42)",COMPLETE
-5,0.9398664177779293,2024-01-17 11:36:59.052806,2024-01-17 11:37:06.218083,0 days 00:00:07.165277,3,175,"RandomForestRegressor(max_depth=3, n_estimators=175, random_state=42)",COMPLETE
+number,value,datetime_start,datetime_complete,duration,params_max_depth,params_min_samples_leaf,params_n_estimators,user_attrs_best_model,state
+25,0.867063306384314,2024-02-10 15:21:30.115089,2024-02-10 15:22:00.291585,0 days 00:00:30.176496,13,2,275,"RandomForestRegressor(max_depth=13, min_samples_leaf=2, n_estimators=275,
+                      random_state=42)",COMPLETE
+24,0.867063306384314,2024-02-10 15:21:24.541202,2024-02-10 15:21:54.708418,0 days 00:00:30.167216,13,2,275,"RandomForestRegressor(max_depth=13, min_samples_leaf=2, n_estimators=275,
+                      random_state=42)",COMPLETE
+22,0.8679681107268025,2024-02-10 15:21:12.383006,2024-02-10 15:21:39.142759,0 days 00:00:26.759753,12,2,250,"RandomForestRegressor(max_depth=12, min_samples_leaf=2, n_estimators=250,
+                      random_state=42)",COMPLETE
+23,0.868343292635366,2024-02-10 15:21:12.506324,2024-02-10 15:21:42.113572,0 days 00:00:29.607248,12,2,275,"RandomForestRegressor(max_depth=12, min_samples_leaf=2, n_estimators=275,
+                      random_state=42)",COMPLETE
+21,0.868343292635366,2024-02-10 15:21:09.006363,2024-02-10 15:21:38.528291,0 days 00:00:29.521928,12,2,275,"RandomForestRegressor(max_depth=12, min_samples_leaf=2, n_estimators=275,
+                      random_state=42)",COMPLETE
+18,0.8690501458846971,2024-02-10 15:20:42.118222,2024-02-10 15:21:12.473054,0 days 00:00:30.354832,15,3,300,"RandomForestRegressor(max_depth=15, min_samples_leaf=3, n_estimators=300,
+                      random_state=42)",COMPLETE
+17,0.8690501458846971,2024-02-10 15:20:42.044510,2024-02-10 15:21:12.349575,0 days 00:00:30.305065,15,3,300,"RandomForestRegressor(max_depth=15, min_samples_leaf=3, n_estimators=300,
+                      random_state=42)",COMPLETE
+16,0.8699734597524031,2024-02-10 15:20:40.942070,2024-02-10 15:21:08.975654,0 days 00:00:28.033584,15,3,275,"RandomForestRegressor(max_depth=15, min_samples_leaf=3, n_estimators=275,
+                      random_state=42)",COMPLETE
+19,0.8700931164927729,2024-02-10 15:20:57.519087,2024-02-10 15:21:24.509309,0 days 00:00:26.990222,11,3,275,"RandomForestRegressor(max_depth=11, min_samples_leaf=3, n_estimators=275,
+                      random_state=42)",COMPLETE
+20,0.8701438277893917,2024-02-10 15:20:58.709797,2024-02-10 15:21:30.078412,0 days 00:00:31.368615,11,2,300,"RandomForestRegressor(max_depth=11, min_samples_leaf=2, n_estimators=300,
+                      random_state=42)",COMPLETE
+29,0.8704265433337188,2024-02-10 15:21:54.743404,2024-02-10 15:22:25.169281,0 days 00:00:30.425877,13,1,250,"RandomForestRegressor(max_depth=13, n_estimators=250, random_state=42)",COMPLETE
+27,0.8704265433337188,2024-02-10 15:21:39.209662,2024-02-10 15:22:09.692982,0 days 00:00:30.483320,13,1,250,"RandomForestRegressor(max_depth=13, n_estimators=250, random_state=42)",COMPLETE
+26,0.8704265433337188,2024-02-10 15:21:38.563829,2024-02-10 15:22:09.877087,0 days 00:00:31.313258,13,1,250,"RandomForestRegressor(max_depth=13, n_estimators=250, random_state=42)",COMPLETE
+28,0.8704265433337188,2024-02-10 15:21:42.204916,2024-02-10 15:22:12.655966,0 days 00:00:30.451050,13,1,250,"RandomForestRegressor(max_depth=13, n_estimators=250, random_state=42)",COMPLETE
+15,0.8721144151474467,2024-02-10 15:20:38.283612,2024-02-10 15:20:58.685995,0 days 00:00:20.402383,15,3,200,"RandomForestRegressor(max_depth=15, min_samples_leaf=3, n_estimators=200,
+                      random_state=42)",COMPLETE
+6,0.8725805524505101,2024-02-10 15:20:15.804561,2024-02-10 15:20:42.013342,0 days 00:00:26.208781,10,5,300,"RandomForestRegressor(max_depth=10, min_samples_leaf=5, n_estimators=300,
+                      random_state=42)",COMPLETE
+14,0.8727351896706551,2024-02-10 15:20:37.337063,2024-02-10 15:20:57.492623,0 days 00:00:20.155560,14,3,200,"RandomForestRegressor(max_depth=14, min_samples_leaf=3, n_estimators=200,
+                      random_state=42)",COMPLETE
+3,0.8731499272953659,2024-02-10 15:20:06.720047,2024-02-10 15:20:26.860164,0 days 00:00:20.140117,15,5,225,"RandomForestRegressor(max_depth=15, min_samples_leaf=5, n_estimators=225,
+                      random_state=42)",COMPLETE
+7,0.8775318229998623,2024-02-10 15:20:16.049656,2024-02-10 15:20:24.881457,0 days 00:00:08.831801,14,5,100,"RandomForestRegressor(max_depth=14, min_samples_leaf=5, random_state=42)",COMPLETE
+11,0.8793793733845094,2024-02-10 15:20:26.883051,2024-02-10 15:20:38.263870,0 days 00:00:11.380819,11,5,125,"RandomForestRegressor(max_depth=11, min_samples_leaf=5, n_estimators=125,
+                      random_state=42)",COMPLETE
+9,0.8816050315709033,2024-02-10 15:20:24.105035,2024-02-10 15:20:40.920713,0 days 00:00:16.815678,7,2,200,"RandomForestRegressor(max_depth=7, min_samples_leaf=2, n_estimators=200,
+                      random_state=42)",COMPLETE
+10,0.8873965652421003,2024-02-10 15:20:24.891950,2024-02-10 15:20:35.820159,0 days 00:00:10.928209,6,4,150,"RandomForestRegressor(max_depth=6, min_samples_leaf=4, n_estimators=150,
+                      random_state=42)",COMPLETE
+4,0.8889903792184984,2024-02-10 15:20:06.777553,2024-02-10 15:20:28.295998,0 days 00:00:21.518445,6,5,300,"RandomForestRegressor(max_depth=6, min_samples_leaf=5, n_estimators=300,
+                      random_state=42)",COMPLETE
+8,0.892993370736679,2024-02-10 15:20:18.719770,2024-02-10 15:20:24.098696,0 days 00:00:05.378926,6,4,75,"RandomForestRegressor(max_depth=6, min_samples_leaf=4, n_estimators=75,
+                      random_state=42)",COMPLETE
+5,0.8952259167582884,2024-02-10 15:20:12.281493,2024-02-10 15:20:16.044746,0 days 00:00:03.763253,6,2,50,"RandomForestRegressor(max_depth=6, min_samples_leaf=2, n_estimators=50,
+                      random_state=42)",COMPLETE
+2,0.8964008517315415,2024-02-10 15:20:06.717926,2024-02-10 15:20:15.792754,0 days 00:00:09.074828,6,5,125,"RandomForestRegressor(max_depth=6, min_samples_leaf=5, n_estimators=125,
+                      random_state=42)",COMPLETE
+1,0.8977740620497364,2024-02-10 15:20:06.692173,2024-02-10 15:20:12.273968,0 days 00:00:05.581795,6,5,75,"RandomForestRegressor(max_depth=6, min_samples_leaf=5, n_estimators=75,
+                      random_state=42)",COMPLETE
+13,0.9137381429539049,2024-02-10 15:20:35.841023,2024-02-10 15:20:42.094046,0 days 00:00:06.253023,5,3,100,"RandomForestRegressor(max_depth=5, min_samples_leaf=3, random_state=42)",COMPLETE
+0,0.9285660367473272,2024-02-10 15:20:06.680892,2024-02-10 15:20:18.710465,0 days 00:00:12.029573,4,1,225,"RandomForestRegressor(max_depth=4, n_estimators=225, random_state=42)",COMPLETE
+12,0.9380963628907881,2024-02-10 15:20:28.322034,2024-02-10 15:20:37.315971,0 days 00:00:08.993937,3,4,225,"RandomForestRegressor(max_depth=3, min_samples_leaf=4, n_estimators=225,
+                      random_state=42)",COMPLETE

@@ -13,6 +13,7 @@ atompair+donorpair:
           # donorpair featurization setings
           - {fpSize: 1024}
 
+    # filename used to save training results
     save_file_name: atompair_donorpair_2048_count
 
 morgan:
@@ -27,16 +28,19 @@ morgan:
     save_file_name: ECFP6_2048_count
 
 MACCS:
+    # there are no settings to specify for generating MACCS Keys
     parameters:
         - {}
     save_file_name: MACCS
 
 MQN:
+    # there are no settings to specify for generating MQN Keys
     parameters:
         - {}
     save_file_name: MQN
 
 rdkit_2d_normalized:
+    # an empty dictionary indicates the default featurization settings will be used
     parameters:
         - {}
     save_file_name: rdkit_2d_normalized
