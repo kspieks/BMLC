@@ -59,7 +59,7 @@ def main():
     # load models and scalers
     with open(args.model_path, 'rb') as f:
         models = pkl.load(f)
-    with open(args.scaler_path, 'rb') as f:
+    with open(args.y_scaler_path, 'rb') as f:
         scalers = pkl.load(f)
     
     if len(models) != len(scalers):

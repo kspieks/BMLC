@@ -143,15 +143,15 @@ class BaselineML(object):
                 best_model = study.user_attrs["best_model"]
 
                 # refit the best model
-                df_summary, df_predictions, models, scalers = train_model(
+                df_summary, df_predictions, models, y_scalers = train_model(
                     best_model,
                     X=X,
                     y=y,
                     splits=self.splits,
                 )
-                with open(os.path.join(self.save_dir, f"{model_type}_{save_file_name}_scalers.pkl"), "wb") as f:
-                    pkl.dump(scalers, f)
-
+              
+                with open(os.path.join(self.save_dir, f"{model_type}_{save_file_name}_y_scalers.pkl"), "wb") as f:
+                    pkl.dump(y_scalers, f)
                 with open(os.path.join(self.save_dir, f"{model_type}_{save_file_name}_best_models.pkl"), "wb") as f:
                     pkl.dump(models, f)
 

@@ -110,7 +110,7 @@ def parse_prediction_command_line_arguments(command_line_args=None):
     
     parser.add_argument('--model_path', type=str,
                         help='Path to the pickle file containing a list of trained models.')
-    parser.add_argument('--scaler_path', type=str,
+    parser.add_argument('--y_scaler_path', type=str,
                         help='Path to the pickle file containing a list of standard scalers to reverse the z-scored predictions.')
     
     parser.add_argument('--pred_name', type=str,
