@@ -63,6 +63,16 @@ def naive_baseline(y, splits, logger):
             ]
     df_summary = pd.DataFrame(dfs_summary_tmp, columns=cols)
 
+    # log summary statistics for the test set
+    df_tmp = df_summary.query("set == 'test'")
+    # df.std() uses dof=1 by default
+    logger.info(f"Test MAE (mean +- 1 std): {df_tmp.MAE.mean():.4f} +- "
+                f"{df_tmp.MAE.std():.4f}")
+    logger.info(f"Test RMSE (mean +- 1 std): {df_tmp.RMSE.mean():.4f} +- "
+                f"{df_tmp.RMSE.std():.4f}")
+    logger.info(f"Test R2 (mean +- 1 std): {df_tmp.R2.mean():.4f} +- "
+                f"{df_tmp.R2.std():.4f}")
+
     return df_summary
 
 
