@@ -1,9 +1,9 @@
 
 BASELINE_MODELS="../../../BMLC"
 
-save_dir=`pwd`
+save_dir=training_results
 echo $save_dir
-log_name="train"
+log_name=train
 
 target="dE0"
 data_path="data_splits/fwd_rev/RDB7_fwd_rev_rxns.csv"
@@ -28,4 +28,3 @@ python $BASELINE_MODELS/train.py \
 --models $models \
 --n_cpus_optuna $n_cpus_optuna \
 --n_trials $n_trials
-
