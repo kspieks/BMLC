@@ -18,7 +18,7 @@ except ImportError:
                       'to use RDKit 2D features.')
 
 from .utils import rdkit_to_np, _hash_fold
-from rdkit_2d_features_list import CURRENT_VERSION, RDKIT_PROPS
+from .rdkit_2d_features_list import CURRENT_VERSION, RDKIT_PROPS
 
 _FP_FEATURIZERS = {}
 
