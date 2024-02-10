@@ -72,7 +72,7 @@ def get_XGB(trial, random_state=42):
         "reg_lambda": trial.suggest_int("reg_lambda", 0, 5),  # L2 regularization
         "min_child_weight": trial.suggest_int("min_child_weight", 0, 5),
         "gamma": trial.suggest_int("gamma", 0, 5),  # minimum loss reduction required to make further partition on a leaf node
-        "learning_rate": trial.suggest_loguniform("learning_rate", 1e-5, 1e-1),  # lower values require more trees
+        "learning_rate": trial.suggest_float("learning_rate", 1e-5, 1e-1, log=True),  # lower values require more trees
         "random_state": random_state,
         "n_jobs": 1,
     }
@@ -87,8 +87,8 @@ def get_MLP(trial, random_state=42):
     layer_size = trial.suggest_int("layer_size", low=100, high=500, step=50)
     params = {
         "hidden_layer_sizes" : [layer_size for i in range(num_layers)],
-        "alpha": trial.suggest_loguniform("alpha", 1e-6, 1e-1),   # L2 regularization
-        "learning_rate_init": trial.suggest_loguniform("learning_rate_init", 1e-4, 1e-1),
+        "alpha": trial.suggest_float("alpha", 1e-6, 1e-1, log=True),   # L2 regularization
+        "learning_rate_init": trial.suggest_float("learning_rate_init", 1e-4, 1e-1, log=True),
         "random_state": random_state, 
     }
     regressor_obj = MLPRegressor(**params)
