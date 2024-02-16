@@ -43,10 +43,10 @@ def read_yaml_file(path):
         The content read from the file.
     """
     if not isinstance(path, str):
-        raise InputError(f'yaml file path must be a string, got {path} which is a {type(path)}')
+        raise ValueError(f'yaml file path must be a string, got {path} which is a {type(path)}')
     
     if not os.path.isfile(path):
-        raise InputError(f'Could not find the YAML file {path}')
+        raise ValueError(f'Could not find the YAML file {path}')
     
     with open(path, 'r') as f:
         content = yaml.safe_load(f)
