@@ -6,27 +6,38 @@ from sklearn.preprocessing import StandardScaler
 from .models import _MODELS
 
 
-def calc_regression_metrics_naive(y_true, y_pred):
+def calc_regression_metrics(y_true, y_pred, ranking_metrics=True):
     """
-    Calculate performance metrics for the naive baseline regression model.
-    It doesn't make sense to report kentall tau or spearman rank metrics here
-    since the naive baseline predicts a constant y_pred vector. 
+    Calculate performance metrics for the regression model.
+    The naive baseline model used in this codebase naively predicts
+    a constant value for the y_pred vector so fro this case, it does not
+    make sense to report kendall tau or spearman rank metrics.
+    
+    Args:
+        y_true: np.array of true values.
+        y_pred: np.array of values predicted from a regression model.
+        ranking_metrics: boolean indicating whether to return ranking metrics.
     """
     MAE = mean_absolute_error(y_true, y_pred)
     RMSE = root_mean_squared_error(y_true, y_pred)
     R2 = r2_score(y_true, y_pred)
 
-    return (MAE, RMSE, R2)
+    metrics = {
+        'MAE': MAE,
+        'RMSE': RMSE,
+        'R2': R2
+    }
 
-def calc_regression_metrics(y_true, y_pred):
-    """Calculate performance metrics for the regression model"""
-    MAE = mean_absolute_error(y_true, y_pred)
-    RMSE = root_mean_squared_error(y_true, y_pred)
-    R2 = r2_score(y_true, y_pred)
-    kendalltau = stats.kendalltau(y_true, y_pred)
-    spearman = stats.spearmanr(y_true, y_pred)
+    if ranking_metrics:
+        kendalltau = stats.kendalltau(y_true, y_pred)
+        metrics['kendall_tau_statistic'] = kendalltau.statistic
+        metrics['kendall_tau_pvalue'] = kendalltau.pvalue
 
-    return (MAE, RMSE, R2, kendalltau, spearman)
+        spearman = stats.spearmanr(y_true, y_pred)
+        metrics['spearman_statistic'] = spearman.statistic
+        metrics['spearman_pvalue'] = spearman.pvalue
+
+    return metrics
 
 
 def naive_baseline(y, splits, logger):
@@ -49,14 +60,14 @@ def naive_baseline(y, splits, logger):
         y_pred_val = [y_train.mean()] * len(y_val)
         y_pred_test = [y_train.mean()] * len(y_test)
 
-        (MAE, RMSE, R2) = calc_regression_metrics_naive(y_train, y_pred_train)
-        dfs_summary_tmp.append(['train', i, MAE, RMSE, R2])
+        metrics = calc_regression_metrics(y_train, y_pred_train, ranking_metris=True)
+        dfs_summary_tmp.append(['train', i, metrics['MAE'], metrics['RMSE'], metrics['R2']])
 
-        (MAE, RMSE, R2) = calc_regression_metrics_naive(y_val, y_pred_val)
-        dfs_summary_tmp.append(['val', i, MAE, RMSE, R2])
+        metrics = calc_regression_metrics(y_val, y_pred_val, ranking_metris=True)
+        dfs_summary_tmp.append(['val', i, metrics['MAE'], metrics['RMSE'], metrics['R2']])
 
-        (MAE, RMSE, R2) = calc_regression_metrics_naive(y_test, y_pred_test)
-        dfs_summary_tmp.append(['test', i, MAE, RMSE, R2])
+        metrics = calc_regression_metrics(y_test, y_pred_test, ranking_metris=True)
+        dfs_summary_tmp.append(['test', i, metrics['MAE'], metrics['RMSE'], metrics['R2']])
 
     cols = ['set', 'split', 
             'MAE', 'RMSE', 'R2', 
@@ -121,24 +132,24 @@ def train_model(model,
 
         # store performance metrics
         # training set
-        (MAE, RMSE, R2, kendalltau, spearman) = calc_regression_metrics(y_train, y_pred_train)
-        dfs_summary_tmp.append(['train', i, MAE, RMSE, R2,
-                                kendalltau.statistic, kendalltau.pvalue,
-                                spearman.statistic, spearman.pvalue,
+        metrics = calc_regression_metrics(y_train, y_pred_train)
+        dfs_summary_tmp.append(['train', i, metrics['MAE'], metrics['RMSE'], metrics['R2'],
+                                metrics['kendall_tau_statistic'], metrics['kendall_tau_pvalue'],
+                                metrics['spearman_statistic'], metrics['spearman_pvalue'],
                                 ])
 
         # validation set
-        (MAE, RMSE, R2, kendalltau, spearman) = calc_regression_metrics(y_val, y_pred_val)
-        dfs_summary_tmp.append(['val', i, MAE, RMSE, R2,
-                                kendalltau.statistic, kendalltau.pvalue,
-                                spearman.statistic, spearman.pvalue,
+        metrics = calc_regression_metrics(y_val, y_pred_val)
+        dfs_summary_tmp.append(['val', i, metrics['MAE'], metrics['RMSE'], metrics['R2'],
+                                metrics['kendall_tau_statistic'], metrics['kendall_tau_pvalue'],
+                                metrics['spearman_statistic'], metrics['spearman_pvalue'],,
                                 ])
 
         # testing set
-        (MAE, RMSE, R2, kendalltau, spearman) = calc_regression_metrics(y_test, y_pred_test)
-        dfs_summary_tmp.append(['test', i, MAE, RMSE, R2,
-                                kendalltau.statistic, kendalltau.pvalue,
-                                spearman.statistic, spearman.pvalue,
+        metrics = calc_regression_metrics(y_test, y_pred_test)
+        dfs_summary_tmp.append(['test', i, metrics['MAE'], metrics['RMSE'], metrics['R2'],
+                                metrics['kendall_tau_statistic'], metrics['kendall_tau_pvalue'],
+                                metrics['spearman_statistic'], metrics['spearman_pvalue'],,
                                 ])
 
     cols = ['set', 'split', 
