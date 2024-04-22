@@ -122,3 +122,63 @@ def make_confusion_matrix(cm,
         ax.set_title(title)
     
     return fig, ax
+
+
+def make_enrichment_plot(y_true,
+                         y_pred,
+                         cutoff_1=0.75,
+                         cutoff_2=1.5,
+                         title='',
+                        ):
+
+    if len(y_true) != len(y_pred):
+        msg = f'Length of y_true should equal length of y_pred. '
+        msg += f'Length of y_true is {len(y_true)} while length of y_pred is {len(y_pred)}.'
+        raise ValueError(msg)
+
+    # combine into a df for easy querying
+    df_combined = pd.DataFrame({'experimental': y_exp, 'pred': single_task})
+
+    df = pd.DataFrame(
+        {f'x <= {cutoff_1}':[
+            len(df_combined.query(f'experimental <= {cutoff_1}').query(f'pred <= {cutoff_1}') ),
+            len(df_combined.query(f'experimental <= {cutoff_1}').query(f'pred > {cutoff_1}').query(f'pred <= {cutoff_2}') ),
+            len(df_combined.query(f'experimental <= {cutoff_1}').query(f'pred > {cutoff_2}')),
+        ],
+        f'{cutoff_1} < x <= {cutoff_2}': [
+            len(df_combined.query(f'experimental > {cutoff_1}').query(f'experimental <= {cutoff_2}').query(f'pred <= {cutoff_1}')),
+            len(df_combined.query(f'experimental > {cutoff_1}').query(f'experimental <= {cutoff_2}').query(f'pred > {cutoff_1}').query(f'pred <= {cutoff_2}') ),
+            len(df_combined.query(f'experimental > {cutoff_1}').query(f'experimental <= {cutoff_2}').query(f'pred > {cutoff_2}') ),
+        ],
+        f'x > {cutoff_2}': [
+            len(df_combined.query(f'experimental > {cutoff_2}').query(f'pred <= {cutoff_1}') ),
+            len(df_combined.query(f'experimental > {cutoff_2}').query(f'pred > {cutoff_1}').query(f'pred <= {cutoff_2}') ),
+            len(df_combined.query(f'experimental > {cutoff_2}').query(f'pred > {cutoff_2}') )
+        ],
+        },
+        index=[f'x <= {cutoff_1}', 
+               f'{cutoff_1} < x <= {cutoff_2}',
+               f'x > {cutoff_2}',
+               ]
+    )
+    # make sure all values are accounted for
+    assert df.sum().sum() == len(y_true)
+
+    # plot results
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax = df.plot(kind='bar',
+                 stacked=True,
+                 color=['crimson', 'gold', 'green'],
+                 ax=ax)
+
+    ax.legend(title='Experimental Values', fontsize=14)
+    sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
+
+    ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
+    ax.set_xlabel('Predicted Value', labelpad=10)
+    ax.set_ylabel('Counts', labelpad=10)
+
+    if title:
+        ax.set_title(title, pad=8)
+
+    return fig, ax
