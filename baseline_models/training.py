@@ -142,14 +142,14 @@ def train_model(model,
         metrics = calc_regression_metrics(y_val, y_pred_val)
         dfs_summary_tmp.append(['val', i, metrics['MAE'], metrics['RMSE'], metrics['R2'],
                                 metrics['kendall_tau_statistic'], metrics['kendall_tau_pvalue'],
-                                metrics['spearman_statistic'], metrics['spearman_pvalue'],,
+                                metrics['spearman_statistic'], metrics['spearman_pvalue'],
                                 ])
 
         # testing set
         metrics = calc_regression_metrics(y_test, y_pred_test)
         dfs_summary_tmp.append(['test', i, metrics['MAE'], metrics['RMSE'], metrics['R2'],
                                 metrics['kendall_tau_statistic'], metrics['kendall_tau_pvalue'],
-                                metrics['spearman_statistic'], metrics['spearman_pvalue'],,
+                                metrics['spearman_statistic'], metrics['spearman_pvalue'],
                                 ])
 
     cols = ['set', 'split', 
