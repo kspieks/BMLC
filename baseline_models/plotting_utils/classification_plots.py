@@ -138,7 +138,7 @@ def make_enrichment_plot(y_true,
         raise ValueError(msg)
 
     # combine into a df for easy querying
-    df_combined = pd.DataFrame({'experimental': y_exp, 'pred': single_task})
+    df_combined = pd.DataFrame({'experimental': y_true, 'pred': y_pred})
 
     df = pd.DataFrame(
         {f'x <= {cutoff_1}':[
