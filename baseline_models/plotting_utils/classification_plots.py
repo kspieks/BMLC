@@ -130,6 +130,7 @@ def make_enrichment_plot(y_true,
                          cutoff_1=0.75,
                          cutoff_2=1.5,
                          title='',
+                         show_stats=True,
                         ):
 
     if len(y_true) != len(y_pred):
@@ -181,5 +182,28 @@ def make_enrichment_plot(y_true,
 
     if title:
         ax.set_title(title, pad=8)
+
+    if show_stats:
+        # get total for each row
+        total = df.sum(axis=1)
+
+        # calculate percent for each row
+        per = df.div(total, axis=0).mul(100).round(1)
+
+        # iterate through containers
+        for c in ax.containers:
+            # get current segment label
+            label = c.get_label()
+
+            # create custom labels
+            labels = [f'{int(v.get_height())}\n({row}%)' if row > 10 else '' for v, row in zip(c, per[label])]
+
+            # add new annotation
+            ax.bar_label(c,
+                         labels=labels,
+                         label_type='center',
+                         fontsize=16,
+                         color='k',
+                        )
 
     return fig, ax
