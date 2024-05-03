@@ -17,7 +17,7 @@ def _hash_fold(nze: dict, nBits: int) -> np.array:
     vec = np.zeros(nBits, dtype=np.int32)
     bits = list(nze. keys())
     for bit in bits:
-        n = _sum_digits (bit, nBits)
+        n = _sum_digits(bit, nBits)
         idx = n % nBits
         vec[idx] = nze[bit]
 
