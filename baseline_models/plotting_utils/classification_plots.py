@@ -167,10 +167,13 @@ def make_enrichment_plot(y_true,
     assert df.sum().sum() == len(y_true)
 
     # plot results
+    COLORS = ['crimson', 'gold', 'green']
+    if descending:
+      COLORS = list(reversed(COLORS))
     fig, ax = plt.subplots(figsize=(8, 6))
     ax = df.plot(kind='bar',
                  stacked=True,
-                 color=['crimson', 'gold', 'green'],
+                 color=COLORS,
                  ax=ax)
 
     ax.legend(title='Experimental Values', fontsize=14)
