@@ -131,6 +131,7 @@ def make_enrichment_plot(y_true,
                          cutoff_2=1.5,
                          title='',
                          show_stats=True,
+                         descending=False,
                         ):
 
     if len(y_true) != len(y_pred):
