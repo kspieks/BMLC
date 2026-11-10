@@ -1,5 +1,5 @@
 import numpy as np
-from pandarallel import pandarallel
+from joblib import Parallel, delayed
 
 from .featurizers import _FP_FEATURIZERS
 from .utils import get_rxn_fp
@@ -39,19 +39,22 @@ def create_features(df,
         raise ValueError(msg)
 
     # calculate input features X (i.e., fingerprint vectors) in parallel
-    pandarallel.initialize(nb_workers=n_cpus, progress_bar=True)
     fp_arrays = []
     for f, params in zip(featurizers, parameters):
         # reaction mode
         if rxn_mode:
-            params['featurizer'] = _FP_FEATURIZERS[f]
-            fps = df[smiles_column].parallel_apply(get_rxn_fp, **params)
+            fn = get_rxn_fp
+            params = {**params, 'featurizer': _FP_FEATURIZERS[f]}
 
         # molecule mode
         else:
-            fps = df[smiles_column].parallel_apply(_FP_FEATURIZERS[f], **params)
+            fn = _FP_FEATURIZERS[f]
 
-        fp_array = np.stack(fps.values)
+        fps = Parallel(n_jobs=n_cpus, backend="loky")(
+            delayed(fn)(smi, **params) for smi in df[smiles_column]
+        )
+
+        fp_array = np.stack(fps)
         fp_arrays.append(fp_array)
 
     X = np.hstack(fp_arrays)
