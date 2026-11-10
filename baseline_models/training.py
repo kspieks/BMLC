@@ -60,13 +60,13 @@ def naive_baseline(y, splits, logger):
         y_pred_val = [y_train.mean()] * len(y_val)
         y_pred_test = [y_train.mean()] * len(y_test)
 
-        metrics = calc_regression_metrics(y_train, y_pred_train, ranking_metris=True)
+        metrics = calc_regression_metrics(y_train, y_pred_train, ranking_metrics=False)
         dfs_summary_tmp.append(['train', i, metrics['MAE'], metrics['RMSE'], metrics['R2']])
 
-        metrics = calc_regression_metrics(y_val, y_pred_val, ranking_metris=True)
+        metrics = calc_regression_metrics(y_val, y_pred_val, ranking_metrics=False)
         dfs_summary_tmp.append(['val', i, metrics['MAE'], metrics['RMSE'], metrics['R2']])
 
-        metrics = calc_regression_metrics(y_test, y_pred_test, ranking_metris=True)
+        metrics = calc_regression_metrics(y_test, y_pred_test, ranking_metrics=False)
         dfs_summary_tmp.append(['test', i, metrics['MAE'], metrics['RMSE'], metrics['R2']])
 
     cols = ['set', 'split', 
