@@ -19,6 +19,9 @@
 # egg files (pip install -e)
 *.egg-info/*
 
+# uv virtual environment
+.venv/
+
 # Compiled Python modules
 *.pyc
 *.so
