@@ -1,5 +1,5 @@
 
-BASELINE_MODELS="../../../BMLC"
+BASELINE_MODELS="../.."
 
 save_dir=training_results
 echo $save_dir

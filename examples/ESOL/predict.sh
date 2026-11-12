@@ -1,4 +1,4 @@
-BASELINE_MODELS='../../../BMLC'
+BASELINE_MODELS='../..'
 
 save_dir=`pwd`
 echo $save_dir
