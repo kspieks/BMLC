@@ -1,5 +1,6 @@
 import pandas as pd
 from scipy import stats
+from sklearn.base import clone
 from sklearn.metrics import mean_absolute_error, root_mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler
 
@@ -115,14 +116,15 @@ def train_model(model,
 
         y_train_scaled = scaler.transform(y_train)  # N x 1
 
-        # fit the model to the training data
-        model.fit(X_train, y_train_scaled.flatten())
-        models.append(model)
+        # fit a fresh copy for each fold so `models` holds one fitted model per split
+        fold_model = clone(model)
+        fold_model.fit(X_train, y_train_scaled.flatten())
+        models.append(fold_model)
 
         # get predictions. reshape size to be N x 1
-        y_pred_train = scaler.inverse_transform(model.predict(X_train).reshape(-1, 1))
-        y_pred_val = scaler.inverse_transform(model.predict(X_val).reshape(-1, 1))
-        y_pred_test = scaler.inverse_transform(model.predict(X_test).reshape(-1, 1))
+        y_pred_train = scaler.inverse_transform(fold_model.predict(X_train).reshape(-1, 1))
+        y_pred_val = scaler.inverse_transform(fold_model.predict(X_val).reshape(-1, 1))
+        y_pred_test = scaler.inverse_transform(fold_model.predict(X_test).reshape(-1, 1))
 
         data_dict = {'y_test': y_test.flatten(),
                      'y_pred_test': y_pred_test.flatten(),
