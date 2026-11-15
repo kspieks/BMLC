@@ -14,7 +14,7 @@ featurizer_yaml_path=featurizer_settings.yaml
 models="LinearSVR XGB"
 
 n_cpus_optuna=5
-n_trials=25
+n_trials=30
 
 python $BASELINE_MODELS/train.py \
 --log_name $log_name \
