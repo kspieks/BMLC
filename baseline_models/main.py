@@ -10,6 +10,7 @@ import yaml
 
 from .features.create_features import create_features
 from .training import Objective, callback, naive_baseline, train_model
+from .utils.utils import save_models
 
 
 class BaselineML(object):
@@ -152,8 +153,7 @@ class BaselineML(object):
               
                 with open(os.path.join(self.save_dir, f"{model_type}_{save_file_name}_y_scalers.pkl"), "wb") as f:
                     pkl.dump(y_scalers, f)
-                with open(os.path.join(self.save_dir, f"{model_type}_{save_file_name}_best_models.pkl"), "wb") as f:
-                    pkl.dump(models, f)
+                save_models(models, os.path.join(self.save_dir, f"{model_type}_{save_file_name}_best_models.pkl"))
 
                 df_summary.to_csv(os.path.join(self.save_dir, f"{model_type}_{save_file_name}_summary.csv"), index=False)
                 df_predictions.to_csv(os.path.join(self.save_dir, f"{model_type}_{save_file_name}_predictions.csv"), index=False)

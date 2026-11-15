@@ -14,7 +14,7 @@ import yaml
 
 from baseline_models.features.create_features import create_features
 from baseline_models.utils.parsing import parse_prediction_command_line_arguments
-from baseline_models.utils.utils import create_logger, read_yaml_file
+from baseline_models.utils.utils import create_logger, load_models, read_yaml_file
 
 
 def main():
@@ -57,8 +57,7 @@ def main():
     logger.info(f'X.shape: {X.shape}')
 
     # load models and scalers
-    with open(args.model_path, 'rb') as f:
-        models = pkl.load(f)
+    models = load_models(args.model_path)
     with open(args.y_scaler_path, 'rb') as f:
         scalers = pkl.load(f)
     

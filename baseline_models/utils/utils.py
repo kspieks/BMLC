@@ -1,5 +1,7 @@
 import logging
 import os
+
+import joblib
 import yaml
 
 def create_logger(name, log_dir):
@@ -52,3 +54,44 @@ def read_yaml_file(path):
         content = yaml.safe_load(f)
 
     return content
+
+
+def save_models(models, path):
+    """
+    Save a list of fitted models with joblib, compressed with zlib level 3.
+
+    Compression shrinks the file because the models hold large numpy arrays
+    (e.g., 5 random forests: 96.4 MiB uncompressed, 28.4 MiB compressed).
+    Compression level 3 is joblib's suggested trade-off between file size and
+    speed.
+
+    Args:
+        models (list): The fitted models, one per split.
+        path (str): The file path to write, e.g. 'RF_MACCS_best_models.pkl'.
+    """
+    joblib.dump(models, path, compress=('zlib', 3))
+
+
+def load_models(path):
+    """
+    Load a list of fitted models from a file written by `save_models` or by
+    `pickle.dump`.
+
+    joblib.load reads the first bytes of the file to detect whether it is
+    compressed (zlib, gzip, bz2, xz/lzma) or not compressed, and handles each
+    case. Older uncompressed .pkl files therefore load without any change,
+    e.g., examples/RDB7/training_results/XGB_MACCS_best_models.pkl.
+    The reverse does not hold: pickle.load cannot read a compressed file and
+    raises an UnpicklingError.
+
+    Like pickle, joblib can execute arbitrary code when loading a file, so only
+    load files from a trusted source. Loading also requires the same package
+    versions (scikit-learn, xgboost, numpy) as the environment that saved them.
+
+    Args:
+        path (str): The file path to read.
+
+    Returns:
+        list: The fitted models, one per split.
+    """
+    return joblib.load(path)

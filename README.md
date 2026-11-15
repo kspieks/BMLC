@@ -77,6 +77,10 @@ For each featurizer and model, `save_dir` gets `{model}_{name}_best_models.pkl`,
 `_y_scalers.pkl`, `_summary.csv`, `_predictions.csv`, and `_optuna_results.csv`, plus
 `{name}_settings.yaml` for prediction and `naive_baseline_summary.csv`.
 
+The models are saved with `joblib.dump(..., compress=('zlib', 3))`, which shrinks the
+5 random forests of the ESOL example from 96.4 MiB to 28.4 MiB (dump 1.1 s, load 0.3 s).
+The file keeps the `.pkl` extension.
+
 ## Predict
 
 ```bash
@@ -90,6 +94,15 @@ uv run python predict.py \
 ```
 
 The output csv has `mean_pred`, `ensemble_std`, and one column per split model.
+
+`predict.py` loads the models with `joblib.load`, which reads the first bytes of the file
+to detect whether it is compressed and handles both cases. Files saved with `joblib.dump`
+(compressed or not) and older files saved with `pickle.dump` (such as
+`examples/RDB7/training_results/XGB_MACCS_best_models.pkl`) all load without any option.
+`pickle.load` cannot read a compressed file, so use `baseline_models.utils.utils.load_models`
+(or `joblib.load`) when loading the `_best_models.pkl` files in your own code. Like pickle,
+joblib can run arbitrary code when loading, so only load files you trust, with the same
+scikit-learn and xgboost versions that saved them.
 
 ## Examples
 
