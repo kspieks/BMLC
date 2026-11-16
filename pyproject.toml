@@ -34,6 +34,7 @@ notebooks = [
     "hiplot>=0.1.33",
     "ipykernel>=7.4",
     "jupyterlab>=4.6",
+    "notebook>=7.6",
 ]
 
 [tool.setuptools.packages.find]

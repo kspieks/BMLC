@@ -21,7 +21,7 @@ uv run bash train.sh
 # predict with the trained models
 uv run bash predict.sh
 
-# open the notebooks
+# open the notebooks (or `uv run jupyter notebook`)
 uv run jupyter lab
 ```
 
@@ -131,8 +131,14 @@ old definition.
 ## Notebooks
 
 ```bash
-uv run jupyter lab
+uv run jupyter lab        # file browser, tabs, and terminals in one window
+uv run jupyter notebook   # one notebook per browser tab
 ```
+
+Both open the same `.ipynb` files and use the project environment's kernel. Start them with
+`uv run` (or after `source .venv/bin/activate`) so the command comes from `.venv`. A bare
+`jupyter notebook` outside the environment can start another Python's Jupyter, such as
+Anaconda's, which does not have rdkit.
 
 In VS Code, select `.venv/bin/python` as the notebook kernel instead.
 
